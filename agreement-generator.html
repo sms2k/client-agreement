@@ -63,6 +63,10 @@
             grid-template-columns: 1fr;
         }
 
+        .form-row.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
         .form-group {
             display: flex;
             flex-direction: column;
@@ -73,6 +77,12 @@
             margin-bottom: 8px;
             color: #333;
             font-size: 14px;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
         }
 
         input, select, textarea {
@@ -167,8 +177,17 @@
             color: #ef4444;
         }
 
+        .info-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
-            .form-row {
+            .form-row, .form-row.three-col {
                 grid-template-columns: 1fr;
             }
 
@@ -193,9 +212,35 @@
                     <label for="agreementType">Agreement Type <span class="required">*</span></label>
                     <select id="agreementType" required>
                         <option value="">-- Select Agreement Type --</option>
-                        <option value="local">$1,499/month - AI Content & Automation (Local Package)</option>
-                        <option value="seo">$2,999/month - AI Content, Automation & SEO Services</option>
+                        <option value="local">$1,499/month - AI Content & Automation (Local Package) - $2,000 Setup Fee</option>
+                        <option value="seo">$2,999/month - AI Content, Automation & SEO Services - $5,000 Setup Fee</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Industry Template (Optional)</div>
+                <div class="info-box">
+                    Select an industry to auto-fill service descriptions. You can customize these after selection.
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="industryType">Industry Type</label>
+                        <select id="industryType">
+                            <option value="">-- Select Industry (Optional) --</option>
+                            <option value="realtor">Real Estate / Realtor</option>
+                            <option value="roofing">Roofing Company</option>
+                            <option value="hvac">HVAC Services</option>
+                            <option value="painting">Painting Services</option>
+                            <option value="flooring">Flooring Services</option>
+                            <option value="cleaning">Cleaning Company</option>
+                            <option value="builder">Home Builder / General Contractor</option>
+                            <option value="plumbing">Plumbing Services</option>
+                            <option value="electrical">Electrical Services</option>
+                            <option value="landscaping">Landscaping Services</option>
+                            <option value="custom">Custom / Other</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -266,11 +311,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="serviceSpecific">Service-Specific Automation <span class="required">*</span></label>
-                        <input type="text" id="serviceSpecific" placeholder="e.g., Real Estate Listings, Legal Case Studies" required>
+                        <input type="text" id="serviceSpecific" placeholder="e.g., Real Estate Listings, Roofing Projects" required>
                     </div>
                     <div class="form-group">
                         <label for="serviceItem">Service-Specific Item <span class="required">*</span></label>
-                        <input type="text" id="serviceItem" placeholder="e.g., real estate listings, case studies" required>
+                        <input type="text" id="serviceItem" placeholder="e.g., real estate listings, roofing projects" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -281,6 +326,27 @@
                     <div class="form-group">
                         <label for="crmSoftware">CRM Software <span class="required">*</span></label>
                         <input type="text" id="crmSoftware" placeholder="e.g., HighLevel, GoHighLevel" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">AI Usage Charges</div>
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        <label for="voiceAgentRate">Voice Agent Per-Minute Rate <span class="required">*</span></label>
+                        <input type="text" id="voiceAgentRate" placeholder="e.g., $0.10" required>
+                        <div class="helper-text">Enter rate with $ symbol</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="chatAgentRate">Chat Agent Per-Message Rate <span class="required">*</span></label>
+                        <input type="text" id="chatAgentRate" placeholder="e.g., $0.15" required>
+                        <div class="helper-text">Enter rate with $ symbol</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalUsageNote">Additional Usage Charges</label>
+                        <input type="text" id="additionalUsageNote" placeholder="Optional">
+                        <div class="helper-text">Optional (e.g., SMS credits)</div>
                     </div>
                 </div>
             </div>
@@ -330,6 +396,86 @@
         const output = document.getElementById('output');
         const downloadBtn = document.getElementById('downloadBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const industrySelect = document.getElementById('industryType');
+
+        // Industry-specific templates
+        const industryTemplates = {
+            realtor: {
+                clientBusiness: 'residential and commercial real estate services',
+                serviceSpecific: 'Real Estate Listings',
+                serviceItem: 'property listings'
+            },
+            roofing: {
+                clientBusiness: 'residential and commercial roofing services',
+                serviceSpecific: 'Roofing Projects and Services',
+                serviceItem: 'roofing projects, completed jobs, and service offerings'
+            },
+            hvac: {
+                clientBusiness: 'HVAC installation, maintenance, and repair services',
+                serviceSpecific: 'HVAC Services and Projects',
+                serviceItem: 'HVAC installations, maintenance packages, and service offerings'
+            },
+            painting: {
+                clientBusiness: 'residential and commercial painting services',
+                serviceSpecific: 'Painting Projects and Services',
+                serviceItem: 'painting projects, completed jobs, and service offerings'
+            },
+            flooring: {
+                clientBusiness: 'flooring installation and refinishing services',
+                serviceSpecific: 'Flooring Projects and Services',
+                serviceItem: 'flooring installations, completed projects, and service offerings'
+            },
+            cleaning: {
+                clientBusiness: 'residential and commercial cleaning services',
+                serviceSpecific: 'Cleaning Services and Packages',
+                serviceItem: 'cleaning packages, service offerings, and special promotions'
+            },
+            builder: {
+                clientBusiness: 'custom home building and general contracting services',
+                serviceSpecific: 'Construction Projects and Services',
+                serviceItem: 'new construction projects, completed homes, and service offerings'
+            },
+            plumbing: {
+                clientBusiness: 'residential and commercial plumbing services',
+                serviceSpecific: 'Plumbing Services and Projects',
+                serviceItem: 'plumbing installations, repairs, and service offerings'
+            },
+            electrical: {
+                clientBusiness: 'residential and commercial electrical services',
+                serviceSpecific: 'Electrical Services and Projects',
+                serviceItem: 'electrical installations, repairs, and service offerings'
+            },
+            landscaping: {
+                clientBusiness: 'landscaping design, installation, and maintenance services',
+                serviceSpecific: 'Landscaping Projects and Services',
+                serviceItem: 'landscaping projects, completed installations, and service offerings'
+            },
+            custom: {
+                clientBusiness: '',
+                serviceSpecific: '',
+                serviceItem: ''
+            }
+        };
+
+        // Apply industry template when selected
+        industrySelect.addEventListener('change', (e) => {
+            const industry = e.target.value;
+            if (industry && industryTemplates[industry]) {
+                const template = industryTemplates[industry];
+                if (template.clientBusiness) {
+                    document.getElementById('clientBusiness').value = template.clientBusiness;
+                }
+                if (template.serviceSpecific) {
+                    document.getElementById('serviceSpecific').value = template.serviceSpecific;
+                }
+                if (template.serviceItem) {
+                    document.getElementById('serviceItem').value = template.serviceItem;
+                }
+
+                // Trigger save to localStorage
+                saveFormData();
+            }
+        });
 
         // Load saved form data from localStorage
         window.addEventListener('load', () => {
@@ -345,15 +491,18 @@
             }
         });
 
-        // Save form data to localStorage on input
-        form.addEventListener('input', () => {
+        // Save form data to localStorage
+        function saveFormData() {
             const formData = {};
             const inputs = form.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 formData[input.id] = input.value;
             });
             localStorage.setItem('agreementFormData', JSON.stringify(formData));
-        });
+        }
+
+        // Save on input
+        form.addEventListener('input', saveFormData);
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -398,6 +547,9 @@
                 serviceItem: document.getElementById('serviceItem').value,
                 crmPlatformName: document.getElementById('crmPlatformName').value,
                 crmSoftware: document.getElementById('crmSoftware').value,
+                voiceAgentRate: document.getElementById('voiceAgentRate').value,
+                chatAgentRate: document.getElementById('chatAgentRate').value,
+                additionalUsageNote: document.getElementById('additionalUsageNote').value,
                 paymentMethod: document.getElementById('paymentMethod').value,
                 priceValidityDays: document.getElementById('priceValidityDays').value,
                 priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
@@ -430,7 +582,7 @@
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content & Automation $2000 down and $1499 a month Package Local
+            return `Consulting Agreement for AI Content & Automation $2000 Setup Fee and $1499 a month Package Local
 between ${data.clientName} and ${data.consultantName}
 ${formattedDate}
 
@@ -452,9 +604,9 @@ NOW, THEREFORE, in consideration of the mutual covenants and promises made by th
 
 1.3. ${data.serviceSpecific}: Consultant will automate the promotion of Client's ${data.serviceItem} across multiple digital marketing channels, including social media platforms and email campaigns. Client has the right, but not obligation, to review all such posts before they are published.
 
-1.3.1. Client agrees to provide all necessary listing information (property details, images, pricing, and features) through Consultant's designated intake form for each property to be promoted. Consultant shall not be liable for any errors or omissions whatsoever.
+1.3.1. Client agrees to provide all necessary information (details, images, pricing, and features) through Consultant's designated intake form for each item to be promoted. Consultant shall not be liable for any errors or omissions whatsoever.
 
-1.3.1.1. Alternative Data Collection: Consultant may offer AI-assisted data extraction from publicly available listing web pages as a convenience option, subject to technical availability, website restrictions, and the following Client acknowledgements:
+1.3.1.1. Alternative Data Collection: Consultant may offer AI-assisted data extraction from publicly available web pages as a convenience option, subject to technical availability, website restrictions, and the following Client acknowledgements:
 
 1.3.1.1.1. AI extraction may not achieve 100% accuracy.
 
@@ -482,31 +634,41 @@ Certain CRM features or services may incur additional per-use fees (such as SMS 
 1.8. Additional Services: Consultant may offer additional services not listed in this Agreement that may be provided at no additional charge or may incur additional fees, depending on the specific service requested by Client.
 
 2. CLIENT'S DUTIES AND OBLIGATIONS
-[This section was not visible on the shared page. Please scroll to page 3 for me to add this section.]
+
+Client shall:
+• Provide required information, access credentials, branding materials, and approvals in a timely manner
+• Review and approve content when required
+• Pay all fees as required under this Agreement
+• Provide accurate business information for marketing optimization
+• Maintain responsibility for the accuracy of any supplied data
 
 3. COMPENSATION
 
-3.1. Payment Options: Client agrees to one of the following payment structures (select one):
+3.1. Setup Fee: Client shall pay a one-time Setup Fee of Two Thousand Dollars (USD $2,000.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, and platform setup.
 
-Option A: Monthly Payments
-Client shall pay Consultant consecutive monthly installments of One Thousand Four Hundred Ninety-Nine Dollars (USD $1,499.00).
-The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term.
+3.2. Payment Options: Client agrees to one of the following payment structures (select one):
 
-Option B: Upfront Annual Payment (Includes Two Months Free)
-Client shall pay Consultant a single upfront payment of Fifteen Thousand Dollars (USD $15,000.00), due upon execution of this Agreement.
-This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option.
+Option A: Monthly Payments with Setup Fee
+• Setup Fee: Two Thousand Dollars (USD $2,000.00) due upon execution
+• Monthly Fee: Client shall pay Consultant consecutive monthly installments of One Thousand Four Hundred Ninety-Nine Dollars (USD $1,499.00)
+• The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term
 
-3.2. Payment Method: Payments must be made by ${data.paymentMethod}. Consultant will provide a secure payment link or banking details for this purpose.
+Option B: Upfront Annual Payment (Setup Fee Waived, Includes Two Months Free)
+• Client shall pay Consultant a single upfront payment of Fifteen Thousand Dollars (USD $15,000.00), due upon execution of this Agreement
+• The $2,000 Setup Fee is FULLY WAIVED with this option
+• This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option
 
-3.3. Price Validity: The compensation amount outlined in Section 3.1 of this Agreement is valid for a period of ${data.priceValidityDays} calendar days from the date of this Agreement, expiring on ${formattedEndDate}. If the Agreement is not fully executed by both Parties by this date, Consultant reserves the right to revise the compensation amount before finalizing the Agreement.
+3.3. Payment Method: Payments must be made by ${data.paymentMethod}. Consultant will provide a secure payment link or banking details for this purpose.
+
+3.4. Price Validity: The compensation amount outlined in Section 3.1 and 3.2 of this Agreement is valid for a period of ${data.priceValidityDays} calendar days from the date of this Agreement, expiring on ${formattedEndDate}. If the Agreement is not fully executed by both Parties by this date, Consultant reserves the right to revise the compensation amount before finalizing the Agreement.
 
 4. OPTIONAL ADDITIONAL CHARGES FOR AI SERVICES
 
-[Section 4.1 was not visible on the shared page. Please scroll to page 4 or 5 for me to add this section.]
+4.1. AI Voice Agent Usage Charges: Client acknowledges that the use of the AI voice agent (inbound call handling) will incur a charge of ${data.voiceAgentRate} per minute of voice interaction. This per-minute fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to activate or use the AI voice agent, no additional per-minute charges will be accrued.
 
-4.2. Interactive AI Chat Agent Charges: Client acknowledges that the use of interactive AI chat agents (e.g., via Facebook Messenger and/or a website support tool) will incur a charge of [e.g., $0.15] per message. Like the AI voice agent charges, this fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to use AI chat agents, no additional per-message charges will be accrued.
+4.2. Interactive AI Chat Agent Charges: Client acknowledges that the use of interactive AI chat agents (e.g., via Facebook Messenger and/or a website support tool) will incur a charge of ${data.chatAgentRate} per message. Like the AI voice agent charges, this fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to use AI chat agents, no additional per-message charges will be accrued.
 
-4.3. Future Services and Charges: Consultant may offer additional AI-based services in the future that involve per-minute and/or per-usage charges (e.g., AI video, video avatars). In all such cases, Consultant will fully disclose the applicable fees to Client before the service is utilized, ensuring that Client can make an informed decision.
+4.3. Future Services and Charges: Consultant may offer additional AI-based services in the future that involve per-minute and/or per-usage charges (e.g., AI video, video avatars${data.additionalUsageNote ? ', ' + data.additionalUsageNote : ''}). In all such cases, Consultant will fully disclose the applicable fees to Client before the service is utilized, ensuring that Client can make an informed decision.
 
 4.4. Disclosure of Fees: Consultant is committed to disclosing all per-minute and per-usage charges associated with AI services. Consultant will provide Client with all relevant pricing information in advance, allowing Client to evaluate and approve any additional costs before they are incurred.
 
@@ -514,23 +676,23 @@ This non-refundable payment covers a twelve (12) month term, granting a discount
 
 5.1. Project Commencement and Onboarding Period
 
-5.1.1. Commencement Date: The official project start date will occur within [e.g., fifteen (15)] calendar days of Consultant receiving the initial Onboarding Fee from Client (see Section 3.1.1). Consultant will provide written notice to Client via email on or before the Commencement Date to confirm that information gathering and core work has begun.
+5.1.1. Commencement Date: The official project start date will occur within fifteen (15) calendar days of Consultant receiving the initial Setup Fee and first monthly payment (or annual payment) from Client. Consultant will provide written notice to Client via email on or before the Commencement Date to confirm that information gathering and core work has begun.
 
-5.1.2. Onboarding Period: The initial onboarding, system setup, integration, and configuration of all services will be completed within a period of up to [e.g., forty-five (45)] calendar days from the Commencement Date.
+5.1.2. Onboarding Period: The initial onboarding, system setup, integration, and configuration of all services will be completed within a period of up to forty-five (45) calendar days from the Commencement Date.
 
-5.1.3. Delivery of Initial Deliverables: The delivery of the first automated functions or client-facing deliverables is targeted to occur at the conclusion of the [e.g., forty-five (45)] day Onboarding Period. Consultant may, at its sole discretion, implement certain components or modules earlier than this date, but is under no obligation to provide deliverables before the conclusion of the stated timeline.
+5.1.3. Delivery of Initial Deliverables: The delivery of the first automated functions or client-facing deliverables is targeted to occur at the conclusion of the forty-five (45) day Onboarding Period. Consultant may, at its sole discretion, implement certain components or modules earlier than this date, but is under no obligation to provide deliverables before the conclusion of the stated timeline.
 
 5.2. Fulfillment Criteria: This Agreement shall be considered fulfilled, and the Project deemed complete, when all the following conditions have been met:
 
 5.2.1. Completion of Services: Consultant has successfully completed the delivery, implementation, and optimization of all services detailed in Section 1 to the satisfaction of Client, including all tasks, deliverables, and testing as outlined.
 
-5.2.2. Social Media Content Scheduling: Consultant has designed, integrated, automated, and tested social media content for Client's top [e.g., three (3)] preferred social media pages, with content scheduled and automated for a minimum of [e.g., 90 days] following the date of Final Approval, as defined in Section 5.2.5 herein.
+5.2.2. Social Media Content Scheduling: Consultant has designed, integrated, automated, and tested social media content for Client's top three (3) preferred social media pages, with content scheduled and automated for a minimum of 90 days following the date of Final Approval, as defined in Section 5.2.5 herein.
 
 5.2.3. Documentation Delivery: Consultant has provided Client with comprehensive documentation for all services described in Section 1, enabling Client to independently manage these services post-completion.
 
-5.2.4. Full Payment of Invoiced Fees Due: Client has rendered full payment of all fixed fees (e.g., Onboarding Fee, Monthly Services Fees) and all invoiced variable charges (e.g., AI per-minute/per-usage fees) that are due up to the date of Project completion, as agreed upon in Sections 3 (Compensation) and 4 (Optional Additional Charges for AI Services).
+5.2.4. Full Payment of Invoiced Fees Due: Client has rendered full payment of all fixed fees (e.g., Setup Fee, Monthly Services Fees) and all invoiced variable charges (e.g., AI per-minute/per-usage fees) that are due up to the date of Project completion, as agreed upon in Sections 3 (Compensation) and 4 (Optional Additional Charges for AI Services).
 
-5.2.5. Final Approval: Client shall conduct a final review of the services rendered and provide written approval of the completion of the Project. If Client does not provide written approval or express any concerns in writing to Consultant within [e.g., ten (10)] business days following Consultant's notification of completion, the Project will be deemed complete.
+5.2.5. Final Approval: Client shall conduct a final review of the services rendered and provide written approval of the completion of the Project. If Client does not provide written approval or express any concerns in writing to Consultant within ten (10) business days following Consultant's notification of completion, the Project will be deemed complete.
 
 5.3. Completion Date: The official Completion Date shall be the date on which the last of the Fulfillment Criteria (Sections 5.2.1 through 5.2.5) are satisfied. This date may occur earlier than twelve (12) months from the Commencement Date, depending on the actual progress and overlap of the various service timelines.
 
@@ -585,7 +747,7 @@ _______________________________ Title`;
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content, Automation & SEO Services $5000 down and $2999 a month Package
+            return `Consulting Agreement for AI Content, Automation & SEO Services $5000 Setup Fee and $2999 a month Package
 between ${data.clientName} and ${data.consultantName}
 ${formattedDate}
 
@@ -627,7 +789,7 @@ Consultant will generate double the standard blog volume, using AI tools to prod
 Consultant will automate the promotion of Client's ${data.serviceItem} across social platforms, email, and other digital channels.
 
 1.3.1. Client Responsibilities
-Client will provide all required data (e.g., listing details, images, features) using Consultant's intake process.
+Client will provide all required data (e.g., details, images, features) using Consultant's intake process.
 
 1.3.1.1. Optional AI-Assisted Data Extraction
 AI extraction may be offered but must be reviewed and approved by Client prior to publication.
@@ -677,6 +839,7 @@ Google Business Profile optimization for one major city or metro area, including
 Additional services may be provided at no charge or at additional cost depending on the request.
 
 2. CLIENT DUTIES AND OBLIGATIONS
+
 Client shall:
 • Provide required information, access credentials, branding materials, and approvals in a timely manner
 • Review and approve content when required
@@ -686,41 +849,63 @@ Client shall:
 
 3. COMPENSATION
 
-3.1. Payment Options (Updated for $2,999 Package)
+3.1. Setup Fee: Client shall pay a one-time Setup Fee of Five Thousand Dollars (USD $5,000.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, SEO setup, and platform configuration.
 
-Option A: Monthly Payments
-Client shall pay:
-Two Thousand Nine Hundred Ninety-Nine Dollars (USD $2,999.00) per month
-• First payment due at execution
-• Recurring payments due on the same day each month
+3.2. Payment Options: Client agrees to one of the following payment structures (select one):
 
-Option B: Upfront Annual Payment (Includes Two Months Free)
-Client may pay:
-Thirty Thousand Dollars (USD $30,000.00) upfront (non-refundable)
-This covers 12 months and includes a discount equal to two free months.
+Option A: Monthly Payments with Setup Fee
+• Setup Fee: Five Thousand Dollars (USD $5,000.00) due upon execution
+• Monthly Fee: Client shall pay Consultant consecutive monthly installments of Two Thousand Nine Hundred Ninety-Nine Dollars (USD $2,999.00)
+• The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term
 
-3.2. Payment Method
+Option B: Upfront Annual Payment (Setup Fee Waived, Includes Two Months Free)
+• Client shall pay Consultant a single upfront payment of Thirty Thousand Dollars (USD $30,000.00), due upon execution of this Agreement
+• The $5,000 Setup Fee is FULLY WAIVED with this option
+• This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option
+
+3.3. Payment Method
 Accepted forms: ${data.paymentMethod}.
 
-3.3. Price Validity
+3.4. Price Validity
 Pricing is valid for ${data.priceValidityDays} days, expiring on ${formattedEndDate}.
 
 4. OPTIONAL ADDITIONAL AI SERVICE FEES
 
 4.1. AI Voice Agent Usage Charges
-(Insert your standard per-minute rate)
+Client acknowledges that the use of the AI voice agent (inbound call handling) will incur a charge of ${data.voiceAgentRate} per minute of voice interaction. This per-minute fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to activate or use the AI voice agent, no additional per-minute charges will be accrued.
 
 4.2. Interactive AI Chat Agent Charges
-Client acknowledges usage-based fees of [e.g., $0.15 per message].
+Client acknowledges usage-based fees of ${data.chatAgentRate} per message for interactive AI chat agents (e.g., via Facebook Messenger and/or a website support tool). This fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to use AI chat agents, no additional per-message charges will be accrued.
 
 4.3. Future AI Services
-Any new AI-based services will be disclosed before use.
+Any new AI-based services (e.g., AI video, video avatars${data.additionalUsageNote ? ', ' + data.additionalUsageNote : ''}) will be disclosed before use with full pricing transparency.
 
 4.4. Fee Transparency
-Consultant will provide full pricing disclosure for any usage-based fees.
+Consultant will provide full pricing disclosure for any usage-based fees in advance, allowing Client to evaluate and approve any additional costs before they are incurred.
 
 5. PROJECT FULFILLMENT
-(Same structure as original—updated only for compatibility. Let me know if you want expanded timelines or modifications.)
+
+5.1. Project Commencement and Onboarding Period
+
+5.1.1. Commencement Date: The official project start date will occur within fifteen (15) calendar days of Consultant receiving the initial Setup Fee and first monthly payment (or annual payment) from Client. Consultant will provide written notice to Client via email on or before the Commencement Date to confirm that information gathering and core work has begun.
+
+5.1.2. Onboarding Period: The initial onboarding, system setup, integration, and configuration of all services will be completed within a period of up to forty-five (45) calendar days from the Commencement Date.
+
+5.1.3. Delivery of Initial Deliverables: The delivery of the first automated functions or client-facing deliverables is targeted to occur at the conclusion of the forty-five (45) day Onboarding Period. Consultant may, at its sole discretion, implement certain components or modules earlier than this date, but is under no obligation to provide deliverables before the conclusion of the stated timeline.
+
+5.2. Fulfillment Criteria: This Agreement shall be considered fulfilled, and the Project deemed complete, when all the following conditions have been met:
+
+5.2.1. Completion of Services: Consultant has successfully completed the delivery, implementation, and optimization of all services detailed in Section 1 to the satisfaction of Client, including all tasks, deliverables, and testing as outlined.
+
+5.2.2. Social Media Content Scheduling: Consultant has designed, integrated, automated, and tested social media content for Client's top three (3) preferred social media pages, with content scheduled and automated for a minimum of 90 days following the date of Final Approval, as defined in Section 5.2.5 herein.
+
+5.2.3. Documentation Delivery: Consultant has provided Client with comprehensive documentation for all services described in Section 1, enabling Client to independently manage these services post-completion.
+
+5.2.4. Full Payment of Invoiced Fees Due: Client has rendered full payment of all fixed fees (e.g., Setup Fee, Monthly Services Fees) and all invoiced variable charges (e.g., AI per-minute/per-usage fees) that are due up to the date of Project completion, as agreed upon in Sections 3 (Compensation) and 4 (Optional Additional Charges for AI Services).
+
+5.2.5. Final Approval: Client shall conduct a final review of the services rendered and provide written approval of the completion of the Project. If Client does not provide written approval or express any concerns in writing to Consultant within ten (10) business days following Consultant's notification of completion, the Project will be deemed complete.
+
+5.3. Completion Date: The official Completion Date shall be the date on which the last of the Fulfillment Criteria (Sections 5.2.1 through 5.2.5) are satisfied. This date may occur earlier than twelve (12) months from the Commencement Date, depending on the actual progress and overlap of the various service timelines.
 
 6. INTELLECTUAL PROPERTY RIGHTS
 
