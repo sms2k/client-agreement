@@ -1046,31 +1046,42 @@
                 const lines = doc.splitTextToSize(agreementText, 170);
                 let y = 45;
                 const pageHeight = 280;
+                const minSpaceForHeader = 25; // Minimum space needed for header + some content
 
                 for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    const isMainSection = line.match(/^[0-9]+\.\s+[A-Z]/);
+                    const isSubSection = line.match(/^[0-9]+\.[0-9]+/);
+                    const isSignatureHeader = line.match(/^(CLIENT|CONSULTANT)$/);
+                    const isHeader = isMainSection || isSubSection || isSignatureHeader;
+
+                    // Check if we need a new page
                     if (y > pageHeight) {
                         doc.addPage();
                         y = 20;
                     }
-
-                    const line = lines[i];
+                    // If this is a header and there's not enough space for it plus content, start new page
+                    else if (isHeader && (pageHeight - y) < minSpaceForHeader) {
+                        doc.addPage();
+                        y = 20;
+                    }
 
                     // Section headers (1., 2., 3., etc. at start of line)
-                    if (line.match(/^[0-9]+\.\s+[A-Z]/)) {
+                    if (isMainSection) {
                         doc.setFont(undefined, 'bold');
                         doc.setFontSize(sectionHeaderSize);
                         doc.setTextColor(102, 126, 234);
                         y += 3; // Extra spacing before section headers
                     }
                     // Subsection headers (1.1, 1.2, etc.)
-                    else if (line.match(/^[0-9]+\.[0-9]+/)) {
+                    else if (isSubSection) {
                         doc.setFont(undefined, 'bold');
                         doc.setFontSize(normalFontSize);
                         doc.setTextColor(51, 51, 51);
                         y += 2;
                     }
                     // Signature headers
-                    else if (line.match(/^(CLIENT|CONSULTANT)$/)) {
+                    else if (isSignatureHeader) {
                         doc.setFont(undefined, 'bold');
                         doc.setFontSize(sectionHeaderSize);
                         doc.setTextColor(102, 126, 234);
