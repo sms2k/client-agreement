@@ -1379,12 +1379,6 @@
                 doc.line(20, y, 100, y);
                 doc.text('Title', 20, y + 5);
 
-                // Add note at bottom
-                doc.setFontSize(9);
-                doc.setFont(undefined, 'italic');
-                doc.setTextColor(120, 120, 120);
-                doc.text('This document is ready for electronic signature via DocuSign or similar platforms.', 105, 270, { align: 'center' });
-
                 // Save the PDF
                 const fileName = `Kynex-Agreement-${data.clientName.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
                 doc.save(fileName);
