@@ -405,6 +405,14 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="form-row single" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label for="customServices">Custom Additional Services (Optional)</label>
+                        <textarea id="customServices" rows="6" placeholder="Enter any custom services, terms, or special provisions not covered above. This will be added to the agreement as-is."></textarea>
+                        <div class="helper-text">Use this field to add any one-off services, special pricing, or custom terms</div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-section">
@@ -630,7 +638,8 @@
                 addonAdManagement: document.getElementById('addonAdManagement').checked,
                 estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
                 addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
-                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked
+                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked,
+                customServices: document.getElementById('customServices').value
             };
 
             let agreement = '';
@@ -678,7 +687,8 @@
                 addonAdManagement: document.getElementById('addonAdManagement').checked,
                 estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
                 addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
-                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked
+                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked,
+                customServices: document.getElementById('customServices').value
             };
 
             const baseServices = agreementType === 'local' ? [
@@ -973,6 +983,27 @@
                         doc.setFont(undefined, 'normal');
                         doc.text('Real-time conversational AI avatar with custom personality, voice synthesis, and natural language understanding', 25, yPos + 5);
                         yPos += 15;
+                    }
+
+                    if (data.customServices && data.customServices.trim()) {
+                        doc.setFillColor(240, 248, 255);
+                        doc.setDrawColor(100, 149, 237);
+                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
+
+                        doc.setFontSize(10);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(30, 64, 175);
+                        doc.text('CUSTOM: Additional Services', 25, yPos);
+
+                        doc.setFontSize(8);
+                        doc.setFont(undefined, 'normal');
+                        const customLines = doc.splitTextToSize(data.customServices.trim(), 160);
+                        let customY = yPos + 5;
+                        customLines.forEach(line => {
+                            doc.text(line, 25, customY);
+                            customY += 4;
+                        });
+                        yPos = customY + 6;
                     }
                 }
 
@@ -1330,6 +1361,13 @@ ${data.estimatedAdBudget ? `
 
 1.11.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
 ` : ''}
+${data.customServices && data.customServices.trim() ? `
+1.12. CUSTOM ADDITIONAL SERVICES
+
+The following custom services, terms, or provisions have been agreed upon by both parties and are included as part of this Agreement:
+
+${data.customServices.trim()}
+` : ''}
 
 2. CLIENT'S DUTIES AND OBLIGATIONS
 
@@ -1574,6 +1612,13 @@ ${data.estimatedAdBudget ? `
 • Server and bandwidth costs
 
 1.12.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
+` : ''}
+${data.customServices && data.customServices.trim() ? `
+1.13. CUSTOM ADDITIONAL SERVICES
+
+The following custom services, terms, or provisions have been agreed upon by both parties and are included as part of this Agreement:
+
+${data.customServices.trim()}
 ` : ''}
 
 2. CLIENT DUTIES AND OBLIGATIONS
