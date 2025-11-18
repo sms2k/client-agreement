@@ -224,8 +224,8 @@
                     <label for="agreementType">Agreement Type <span class="required">*</span></label>
                     <select id="agreementType" required>
                         <option value="">-- Select Agreement Type --</option>
-                        <option value="local">$1,499/month - AI Content & Automation (Local Package) - $2,000 Setup Fee</option>
-                        <option value="seo">$2,999/month - AI Content, Automation & SEO Services - $5,000 Setup Fee</option>
+                        <option value="local">$1,499/month - AI Content & Automation (Local Package) - $1,999 Setup Fee</option>
+                        <option value="seo">$2,999/month - AI Content, Automation & SEO Services - $4,999 Setup Fee</option>
                     </select>
                 </div>
             </div>
@@ -372,8 +372,28 @@
                 <div class="form-row single">
                     <div class="form-group">
                         <label>
+                            <input type="checkbox" id="addonStatewideSEO" style="width: auto; margin-right: 10px;">
+                            Statewide SEO Upgrade (+$999/month additional)
+                        </label>
+                        <div class="helper-text">Expand SEO coverage to entire state instead of single metro area</div>
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="addonNationwideSEO" style="width: auto; margin-right: 10px;">
+                            Nationwide SEO Upgrade (+$2,499/month additional)
+                        </label>
+                        <div class="helper-text">Expand SEO coverage to nationwide reach</div>
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label>
                             <input type="checkbox" id="addonAdManagement" style="width: auto; margin-right: 10px;">
-                            Ad Management (5% of ad spend + $50/month hard fee)
+                            Ad Management (5% of ad spend + $49.99/month hard fee)
                         </label>
                     </div>
                 </div>
@@ -401,7 +421,7 @@
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="addonInteractiveAvatar" style="width: auto; margin-right: 10px;">
-                            Interactive Avatar ($5,000 one-time setup + $0.19/minute usage)
+                            Interactive Avatar ($4,999 one-time setup + $0.19/minute usage)
                         </label>
                     </div>
                 </div>
@@ -635,6 +655,8 @@
                 priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
                 governingState: document.getElementById('governingState').value,
                 governingCounty: document.getElementById('governingCounty').value,
+                addonStatewideSEO: document.getElementById('addonStatewideSEO').checked,
+                addonNationwideSEO: document.getElementById('addonNationwideSEO').checked,
                 addonAdManagement: document.getElementById('addonAdManagement').checked,
                 estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
                 addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
@@ -684,6 +706,8 @@
                 priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
                 governingState: document.getElementById('governingState').value,
                 governingCounty: document.getElementById('governingCounty').value,
+                addonStatewideSEO: document.getElementById('addonStatewideSEO').checked,
+                addonNationwideSEO: document.getElementById('addonNationwideSEO').checked,
                 addonAdManagement: document.getElementById('addonAdManagement').checked,
                 estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
                 addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
@@ -728,21 +752,27 @@
             ];
 
             const addonServices = [];
+            if (data.addonStatewideSEO) {
+                addonServices.push('ADD-ON: Statewide SEO Upgrade (+$999/month)');
+            }
+            if (data.addonNationwideSEO) {
+                addonServices.push('ADD-ON: Nationwide SEO Upgrade (+$2,499/month)');
+            }
             if (data.addonAdManagement) {
-                addonServices.push('ADD-ON: Ad Management (5% of spend + $50/month)');
+                addonServices.push('ADD-ON: Ad Management (5% of spend + $49.99/month)');
             }
             if (data.addonAvatarVideos) {
                 addonServices.push('ADD-ON: AI Avatar Videos ($99/month)');
             }
             if (data.addonInteractiveAvatar) {
-                addonServices.push('ADD-ON: Interactive Avatar ($5,000 setup + $0.19/min)');
+                addonServices.push('ADD-ON: Interactive Avatar ($4,999 setup + $0.19/min)');
             }
 
             const packageInfo = {
                 name: agreementType === 'local' ? 'AI Content & Automation Package' : 'AI Content, Automation & SEO Services Package',
                 monthly: agreementType === 'local' ? '$1,499' : '$2,999',
-                setup: agreementType === 'local' ? '$2,000' : '$5,000',
-                annual: agreementType === 'local' ? '$15,000' : '$30,000',
+                setup: agreementType === 'local' ? '$1,999' : '$4,999',
+                annual: agreementType === 'local' ? '$14,999' : '$29,999',
                 services: [...baseServices, ...addonServices]
             };
 
@@ -813,7 +843,7 @@
                 doc.setTextColor(51, 51, 51);
                 doc.text('Pay Annually & Save:', 25, 185);
                 doc.setFont(undefined, 'normal');
-                doc.text(`Setup fee WAIVED + 2 months FREE (Save $${agreementType === 'local' ? '4,998' : '10,998'})`, 70, 185);
+                doc.text(`Setup fee WAIVED + 2 months FREE (Save $${agreementType === 'local' ? '4,997' : '10,997'})`, 70, 185);
 
                 // What's Included Section Header
                 doc.setFontSize(16);
@@ -929,13 +959,45 @@
                 });
 
                 // Add-on Services (if any selected)
-                if (data.addonAdManagement || data.addonAvatarVideos || data.addonInteractiveAvatar) {
+                if (data.addonStatewideSEO || data.addonNationwideSEO || data.addonAdManagement || data.addonAvatarVideos || data.addonInteractiveAvatar) {
                     yPos += 5;
                     doc.setFontSize(14);
                     doc.setFont(undefined, 'bold');
                     doc.setTextColor(102, 126, 234);
                     doc.text('Optional Add-On Services', 20, yPos);
                     yPos += 10;
+
+                    if (data.addonStatewideSEO) {
+                        doc.setFillColor(240, 253, 244);
+                        doc.setDrawColor(34, 197, 94);
+                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
+
+                        doc.setFontSize(10);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(21, 128, 61);
+                        doc.text('ADD-ON: Statewide SEO Upgrade - +$999/month', 25, yPos);
+
+                        doc.setFontSize(8);
+                        doc.setFont(undefined, 'normal');
+                        doc.text('Expand SEO optimization coverage from single metro area to entire state with multi-city targeting', 25, yPos + 5);
+                        yPos += 15;
+                    }
+
+                    if (data.addonNationwideSEO) {
+                        doc.setFillColor(240, 253, 244);
+                        doc.setDrawColor(34, 197, 94);
+                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
+
+                        doc.setFontSize(10);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(21, 128, 61);
+                        doc.text('ADD-ON: Nationwide SEO Upgrade - +$2,499/month', 25, yPos);
+
+                        doc.setFontSize(8);
+                        doc.setFont(undefined, 'normal');
+                        doc.text('Expand SEO coverage to nationwide reach with comprehensive multi-location targeting and optimization', 25, yPos + 5);
+                        yPos += 15;
+                    }
 
                     if (data.addonAdManagement) {
                         doc.setFillColor(255, 251, 240);
@@ -945,7 +1007,7 @@
                         doc.setFontSize(10);
                         doc.setFont(undefined, 'bold');
                         doc.setTextColor(146, 64, 14);
-                        doc.text('ADD-ON: Ad Management - 5% of spend + $50/month', 25, yPos);
+                        doc.text('ADD-ON: Ad Management - 5% of spend + $49.99/month', 25, yPos);
 
                         doc.setFontSize(8);
                         doc.setFont(undefined, 'normal');
@@ -977,7 +1039,7 @@
                         doc.setFontSize(10);
                         doc.setFont(undefined, 'bold');
                         doc.setTextColor(109, 40, 217);
-                        doc.text('ADD-ON: Interactive Avatar - $5,000 setup + $0.19/min', 25, yPos);
+                        doc.text('ADD-ON: Interactive Avatar - $4,999 setup + $0.19/min', 25, yPos);
 
                         doc.setFontSize(8);
                         doc.setFont(undefined, 'normal');
@@ -1250,7 +1312,7 @@
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content & Automation $2000 Setup Fee and $1499 a month Package Local
+            return `Consulting Agreement for AI Content & Automation $1999 Setup Fee and $1499 a month Package Local
 between ${data.clientName} and ${data.consultantName}
 ${formattedDate}
 
@@ -1316,9 +1378,9 @@ ${data.addonAdManagement ? `
 1.11.1. Ad Management Services: Consultant will create, manage, and optimize digital advertising campaigns across platforms such as Google Ads, Facebook Ads, LinkedIn Ads, and other mutually agreed-upon platforms.
 
 1.11.1.1. Management Fee Structure:
-• Monthly Management Fee: Fifty Dollars (USD $50.00) per month
+• Monthly Management Fee: Forty-Nine Dollars and Ninety-Nine Cents (USD $49.99) per month
 • Performance Fee: Five percent (5%) of total advertising spend per month
-• The total monthly fee will be the $50 base fee plus 5% of Client's advertising budget
+• The total monthly fee will be the $49.99 base fee plus 5% of Client's advertising budget
 
 1.11.1.2. Client Responsibilities: Client is responsible for providing the advertising budget directly to the advertising platforms. Consultant will have authorized access to manage the campaigns but will not handle direct fund transfers.
 
@@ -1330,7 +1392,7 @@ ${data.addonAdManagement ? `
 • A/B testing and optimization
 • Monthly performance reporting and analysis
 ${data.estimatedAdBudget ? `
-1.11.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $50 (base fee) + ${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
+1.11.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $49.99 (base fee) + $${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
 ` : ''}
 ` : ''}${data.addonAvatarVideos ? `
 1.11.2. AI Avatar Videos: Consultant will provide Client with access to AI-powered avatar video creation tools and services, allowing Client to create professional video content featuring AI-generated avatars.
@@ -1346,7 +1408,7 @@ ${data.estimatedAdBudget ? `
 ` : ''}${data.addonInteractiveAvatar ? `
 1.11.3. Interactive Avatar Services: Consultant will implement and manage an interactive AI avatar system that can engage with website visitors, customers, or event attendees in real-time conversations.
 
-1.11.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Five Thousand Dollars (USD $5,000.00). This covers:
+1.11.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Four Thousand Nine Hundred Ninety-Nine Dollars (USD $4,999.00). This covers:
 • Custom avatar creation and configuration
 • Integration with Client's website or platform
 • Voice and personality customization
@@ -1360,6 +1422,31 @@ ${data.estimatedAdBudget ? `
 • Server and bandwidth costs
 
 1.11.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
+` : ''}${data.addonStatewideSEO ? `
+1.11.4. Statewide SEO Upgrade: Consultant will expand SEO optimization coverage from a single metro area to the entire state, providing comprehensive multi-city targeting and optimization.
+
+1.11.4.1. Additional Monthly Fee: Nine Hundred Ninety-Nine Dollars (USD $999.00) per month, in addition to the base package monthly fee.
+
+1.11.4.2. Services Included:
+• Multi-city keyword targeting and optimization
+• Statewide content strategy
+• Expanded local citation building
+• Multiple location-specific landing pages
+• State-level backlink acquisition
+• Comprehensive state coverage reporting
+` : ''}${data.addonNationwideSEO ? `
+1.11.5. Nationwide SEO Upgrade: Consultant will expand SEO optimization coverage to nationwide reach, providing comprehensive multi-location targeting and national-level optimization strategies.
+
+1.11.5.1. Additional Monthly Fee: Two Thousand Four Hundred Ninety-Nine Dollars (USD $2,499.00) per month, in addition to the base package monthly fee.
+
+1.11.5.2. Services Included:
+• Nationwide keyword targeting and optimization
+• National content distribution strategy
+• Multi-state citation building and management
+• National-level backlink acquisition campaigns
+• Comprehensive geo-targeted landing page creation
+• National rankings monitoring and reporting
+• Competitive analysis across multiple markets
 ` : ''}
 ${data.customServices && data.customServices.trim() ? `
 1.12. CUSTOM ADDITIONAL SERVICES
@@ -1380,18 +1467,18 @@ Client shall:
 
 3. COMPENSATION
 
-3.1. Setup Fee: Client shall pay a one-time Setup Fee of Two Thousand Dollars (USD $2,000.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, and platform setup.
+3.1. Setup Fee: Client shall pay a one-time Setup Fee of One Thousand Nine Hundred Ninety-Nine Dollars (USD $1,999.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, and platform setup.
 
 3.2. Payment Options: Client agrees to one of the following payment structures (select one):
 
 Option A: Monthly Payments with Setup Fee
-• Setup Fee: Two Thousand Dollars (USD $2,000.00) due upon execution
+• Setup Fee: One Thousand Nine Hundred Ninety-Nine Dollars (USD $1,999.00) due upon execution
 • Monthly Fee: Client shall pay Consultant consecutive monthly installments of One Thousand Four Hundred Ninety-Nine Dollars (USD $1,499.00)
 • The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term
 
 Option B: Upfront Annual Payment (Setup Fee Waived, Includes Two Months Free)
-• Client shall pay Consultant a single upfront payment of Fifteen Thousand Dollars (USD $15,000.00), due upon execution of this Agreement
-• The $2,000 Setup Fee is FULLY WAIVED with this option
+• Client shall pay Consultant a single upfront payment of Fourteen Thousand Nine Hundred Ninety-Nine Dollars (USD $14,999.00), due upon execution of this Agreement
+• The $1,999 Setup Fee is FULLY WAIVED with this option
 • This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option
 
 3.3. Payment Method: Payments must be made by ${data.paymentMethod}. Consultant will provide a secure payment link or banking details for this purpose.
@@ -1460,7 +1547,7 @@ IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, 
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content, Automation & SEO Services $5000 Setup Fee and $2999 a month Package
+            return `Consulting Agreement for AI Content, Automation & SEO Services $4999 Setup Fee and $2999 a month Package
 between ${data.clientName} and ${data.consultantName}
 ${formattedDate}
 
@@ -1568,9 +1655,9 @@ ${data.addonAdManagement ? `
 1.12.1. Ad Management Services: Consultant will create, manage, and optimize digital advertising campaigns across platforms such as Google Ads, Facebook Ads, LinkedIn Ads, and other mutually agreed-upon platforms.
 
 1.12.1.1. Management Fee Structure:
-• Monthly Management Fee: Fifty Dollars (USD $50.00) per month
+• Monthly Management Fee: Forty-Nine Dollars and Ninety-Nine Cents (USD $49.99) per month
 • Performance Fee: Five percent (5%) of total advertising spend per month
-• The total monthly fee will be the $50 base fee plus 5% of Client's advertising budget
+• The total monthly fee will be the $49.99 base fee plus 5% of Client's advertising budget
 
 1.12.1.2. Client Responsibilities: Client is responsible for providing the advertising budget directly to the advertising platforms. Consultant will have authorized access to manage the campaigns but will not handle direct fund transfers.
 
@@ -1582,7 +1669,7 @@ ${data.addonAdManagement ? `
 • A/B testing and optimization
 • Monthly performance reporting and analysis
 ${data.estimatedAdBudget ? `
-1.12.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $50 (base fee) + $${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
+1.12.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $49.99 (base fee) + $${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
 ` : ''}
 ` : ''}${data.addonAvatarVideos ? `
 1.12.2. AI Avatar Videos: Consultant will provide Client with access to AI-powered avatar video creation tools and services, allowing Client to create professional video content featuring AI-generated avatars.
@@ -1598,7 +1685,7 @@ ${data.estimatedAdBudget ? `
 ` : ''}${data.addonInteractiveAvatar ? `
 1.12.3. Interactive Avatar Services: Consultant will implement and manage an interactive AI avatar system that can engage with website visitors, customers, or event attendees in real-time conversations.
 
-1.12.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Five Thousand Dollars (USD $5,000.00). This covers:
+1.12.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Four Thousand Nine Hundred Ninety-Nine Dollars (USD $4,999.00). This covers:
 • Custom avatar creation and configuration
 • Integration with Client's website or platform
 • Voice and personality customization
@@ -1612,6 +1699,31 @@ ${data.estimatedAdBudget ? `
 • Server and bandwidth costs
 
 1.12.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
+` : ''}${data.addonStatewideSEO ? `
+1.12.4. Statewide SEO Upgrade: Consultant will expand SEO optimization coverage from a single metro area to the entire state, providing comprehensive multi-city targeting and optimization.
+
+1.12.4.1. Additional Monthly Fee: Nine Hundred Ninety-Nine Dollars (USD $999.00) per month, in addition to the base package monthly fee.
+
+1.12.4.2. Services Included:
+• Multi-city keyword targeting and optimization
+• Statewide content strategy
+• Expanded local citation building
+• Multiple location-specific landing pages
+• State-level backlink acquisition
+• Comprehensive state coverage reporting
+` : ''}${data.addonNationwideSEO ? `
+1.12.5. Nationwide SEO Upgrade: Consultant will expand SEO optimization coverage to nationwide reach, providing comprehensive multi-location targeting and national-level optimization strategies.
+
+1.12.5.1. Additional Monthly Fee: Two Thousand Four Hundred Ninety-Nine Dollars (USD $2,499.00) per month, in addition to the base package monthly fee.
+
+1.12.5.2. Services Included:
+• Nationwide keyword targeting and optimization
+• National content distribution strategy
+• Multi-state citation building and management
+• National-level backlink acquisition campaigns
+• Comprehensive geo-targeted landing page creation
+• National rankings monitoring and reporting
+• Competitive analysis across multiple markets
 ` : ''}
 ${data.customServices && data.customServices.trim() ? `
 1.13. CUSTOM ADDITIONAL SERVICES
@@ -1632,18 +1744,18 @@ Client shall:
 
 3. COMPENSATION
 
-3.1. Setup Fee: Client shall pay a one-time Setup Fee of Five Thousand Dollars (USD $5,000.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, SEO setup, and platform configuration.
+3.1. Setup Fee: Client shall pay a one-time Setup Fee of Four Thousand Nine Hundred Ninety-Nine Dollars (USD $4,999.00), due upon execution of this Agreement. This Setup Fee covers initial onboarding, system configuration, integration, SEO setup, and platform configuration.
 
 3.2. Payment Options: Client agrees to one of the following payment structures (select one):
 
 Option A: Monthly Payments with Setup Fee
-• Setup Fee: Five Thousand Dollars (USD $5,000.00) due upon execution
+• Setup Fee: Four Thousand Nine Hundred Ninety-Nine Dollars (USD $4,999.00) due upon execution
 • Monthly Fee: Client shall pay Consultant consecutive monthly installments of Two Thousand Nine Hundred Ninety-Nine Dollars (USD $2,999.00)
 • The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term
 
 Option B: Upfront Annual Payment (Setup Fee Waived, Includes Two Months Free)
-• Client shall pay Consultant a single upfront payment of Thirty Thousand Dollars (USD $30,000.00), due upon execution of this Agreement
-• The $5,000 Setup Fee is FULLY WAIVED with this option
+• Client shall pay Consultant a single upfront payment of Twenty-Nine Thousand Nine Hundred Ninety-Nine Dollars (USD $29,999.00), due upon execution of this Agreement
+• The $4,999 Setup Fee is FULLY WAIVED with this option
 • This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option
 
 3.3. Payment Method
