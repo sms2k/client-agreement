@@ -801,7 +801,7 @@
                 doc.setFontSize(10);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(51, 51, 51);
-                doc.text('💰 Pay Annually & Save:', 25, 185);
+                doc.text('Pay Annually & Save:', 25, 185);
                 doc.setFont(undefined, 'normal');
                 doc.text(`Setup fee WAIVED + 2 months FREE (Save $${agreementType === 'local' ? '4,998' : '10,998'})`, 70, 185);
 
@@ -849,61 +849,69 @@
                 yPos = 30;
                 const coreServices = [
                     {
-                        title: '🚀 Social Media Automation',
+                        title: 'Social Media Automation',
                         desc: agreementType === 'local'
-                            ? 'Progressive content posting (1→2→3 posts daily) across LinkedIn, Facebook, and additional platforms. AI-enhanced content creation and scheduling.'
-                            : 'Accelerated content posting (2→4→6 posts daily) across LinkedIn, Facebook, and additional platforms. Double volume AI-enhanced content creation.'
+                            ? 'Progressive content posting (1->2->3 posts daily) across LinkedIn, Facebook, and additional platforms. AI-enhanced content creation and scheduling.'
+                            : 'Accelerated content posting (2->4->6 posts daily) across LinkedIn, Facebook, and additional platforms. Double volume AI-enhanced content creation.'
                     },
                     {
-                        title: '📝 AI-Powered Blog Articles',
+                        title: 'AI-Powered Blog Articles',
                         desc: agreementType === 'local'
                             ? 'SEO-optimized blog content designed to improve search rankings, appear in ChatGPT results, and capture featured snippets.'
                             : 'Double volume of SEO-optimized blog articles with advanced keyword targeting, on-page optimization, and strategic internal linking.'
                     },
                     {
-                        title: '⭐ Reputation Management',
+                        title: 'Reputation Management',
                         desc: 'Monitor and respond to reviews across Google, Facebook, Yelp, and industry platforms. Automated review solicitation and reputation reporting.'
                     },
                     {
-                        title: '📍 Listing Management',
+                        title: 'Listing Management',
                         desc: '65+ business directory listings created, verified, and maintained across major platforms to boost local SEO and online visibility.'
                     },
                     {
-                        title: '🤖 AI Agent Suite',
+                        title: 'AI Agent Suite',
                         desc: 'Inbound voice agent for call screening, website chat agent for lead qualification, and Facebook Messenger bot for 24/7 engagement.'
                     },
                     {
-                        title: '💼 Full CRM Platform',
+                        title: 'Full CRM Platform',
                         desc: 'Complete customer relationship management system with email/SMS automation, landing pages, funnels, appointment scheduling, and workflow automation.'
                     }
                 ];
 
                 if (agreementType === 'seo') {
                     coreServices.push({
-                        title: '🔍 Complete SEO Package',
+                        title: 'Complete SEO Package',
                         desc: 'On-page optimization, off-page backlink strategy, local SEO, and Google Business Profile optimization for one metro area.'
                     });
                 }
 
-                coreServices.forEach((service) => {
-                    // Service box
+                coreServices.forEach((service, index) => {
+                    // Service box with left accent bar
                     doc.setFillColor(248, 250, 252);
                     doc.setDrawColor(200, 210, 230);
                     doc.setLineWidth(0.2);
                     doc.roundedRect(20, yPos - 5, 170, 18, 2, 2, 'FD');
 
+                    // Colored left accent bar
+                    doc.setFillColor(102, 126, 234);
+                    doc.rect(20, yPos - 5, 3, 18, 'F');
+
+                    // Bullet circle
+                    doc.setFillColor(102, 126, 234);
+                    doc.circle(28, yPos - 1, 1.5, 'F');
+
                     doc.setFontSize(11);
                     doc.setFont(undefined, 'bold');
                     doc.setTextColor(51, 51, 51);
-                    doc.text(service.title, 25, yPos);
+                    doc.text(service.title, 32, yPos);
 
                     doc.setFontSize(9);
                     doc.setFont(undefined, 'normal');
                     doc.setTextColor(70, 70, 70);
-                    const descLines = doc.splitTextToSize(service.desc, 160);
+                    const descLines = doc.splitTextToSize(service.desc, 155);
                     let descY = yPos + 5;
                     descLines.forEach(line => {
-                        doc.text(line, 25, descY);
+                        doc.text(line, 32, descY);
                         descY += 4;
                     });
 
@@ -927,7 +935,7 @@
                         doc.setFontSize(10);
                         doc.setFont(undefined, 'bold');
                         doc.setTextColor(146, 64, 14);
-                        doc.text('💰 Ad Management - 5% of spend + $50/month', 25, yPos);
+                        doc.text('ADD-ON: Ad Management - 5% of spend + $50/month', 25, yPos);
 
                         doc.setFontSize(8);
                         doc.setFont(undefined, 'normal');
@@ -943,7 +951,7 @@
                         doc.setFontSize(10);
                         doc.setFont(undefined, 'bold');
                         doc.setTextColor(21, 128, 61);
-                        doc.text('🎥 AI Avatar Videos - $99/month', 25, yPos);
+                        doc.text('ADD-ON: AI Avatar Videos - $99/month', 25, yPos);
 
                         doc.setFontSize(8);
                         doc.setFont(undefined, 'normal');
@@ -959,7 +967,7 @@
                         doc.setFontSize(10);
                         doc.setFont(undefined, 'bold');
                         doc.setTextColor(109, 40, 217);
-                        doc.text('🎭 Interactive Avatar - $5,000 setup + $0.19/min', 25, yPos);
+                        doc.text('ADD-ON: Interactive Avatar - $5,000 setup + $0.19/min', 25, yPos);
 
                         doc.setFontSize(8);
                         doc.setFont(undefined, 'normal');
