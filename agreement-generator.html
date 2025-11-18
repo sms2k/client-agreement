@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulting Agreement Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -139,6 +140,17 @@
 
         .btn-download:hover {
             background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-download-pdf {
+            background: #3b82f6;
+            color: white;
+            display: none;
+        }
+
+        .btn-download-pdf:hover {
+            background: #2563eb;
             transform: translateY(-2px);
         }
 
@@ -383,6 +395,7 @@
 
             <div class="button-group">
                 <button type="submit" class="btn-generate">Generate Agreement</button>
+                <button type="button" class="btn-download-pdf" id="downloadPdfBtn">Download as PDF</button>
                 <button type="button" class="btn-download" id="downloadBtn">Download as Text File</button>
                 <button type="button" class="btn-clear" id="clearBtn">Clear Form</button>
             </div>
@@ -395,6 +408,7 @@
         const form = document.getElementById('agreementForm');
         const output = document.getElementById('output');
         const downloadBtn = document.getElementById('downloadBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
         const clearBtn = document.getElementById('clearBtn');
         const industrySelect = document.getElementById('industryType');
 
@@ -531,6 +545,10 @@
             URL.revokeObjectURL(url);
         });
 
+        downloadPdfBtn.addEventListener('click', async () => {
+            await generatePDF();
+        });
+
         function generateAgreement() {
             const agreementType = document.getElementById('agreementType').value;
             const data = {
@@ -568,7 +586,296 @@
             output.textContent = agreement;
             output.style.display = 'block';
             downloadBtn.style.display = 'block';
+            downloadPdfBtn.style.display = 'block';
             output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const agreementType = document.getElementById('agreementType').value;
+            const data = {
+                agreementDate: document.getElementById('agreementDate').value,
+                clientName: document.getElementById('clientName').value,
+                clientEntityType: document.getElementById('clientEntityType').value,
+                clientAddress: document.getElementById('clientAddress').value,
+                clientBusiness: document.getElementById('clientBusiness').value,
+                consultantName: document.getElementById('consultantName').value,
+                consultantDBA: document.getElementById('consultantDBA').value,
+                consultantEntityType: document.getElementById('consultantEntityType').value,
+                consultantAddress: document.getElementById('consultantAddress').value,
+                serviceSpecific: document.getElementById('serviceSpecific').value,
+                serviceItem: document.getElementById('serviceItem').value,
+                crmPlatformName: document.getElementById('crmPlatformName').value,
+                crmSoftware: document.getElementById('crmSoftware').value,
+                voiceAgentRate: document.getElementById('voiceAgentRate').value,
+                chatAgentRate: document.getElementById('chatAgentRate').value,
+                additionalUsageNote: document.getElementById('additionalUsageNote').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                priceValidityDays: document.getElementById('priceValidityDays').value,
+                priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
+                governingState: document.getElementById('governingState').value,
+                governingCounty: document.getElementById('governingCounty').value
+            };
+
+            const packageInfo = agreementType === 'local' ? {
+                name: 'AI Content & Automation Package',
+                monthly: '$1,499',
+                setup: '$2,000',
+                annual: '$15,000',
+                services: [
+                    'Social Media Management (LinkedIn, Facebook, etc.)',
+                    'Progressive posting: 1→2→3 posts per day after 60 days',
+                    'AI-Powered Blog Article Creation',
+                    'Automated Service-Specific Promotions',
+                    'Inbound AI Voice Agent',
+                    'Website Chat Agent',
+                    'Facebook Messenger Chat Agent',
+                    'Full CRM Platform Access',
+                    'Contact & Lead Management',
+                    'Automated Email & SMS Campaigns',
+                    'Landing Pages & Funnel Builder',
+                    'Appointment Scheduling & Calendar Integration'
+                ]
+            } : {
+                name: 'AI Content, Automation & SEO Services Package',
+                monthly: '$2,999',
+                setup: '$5,000',
+                annual: '$30,000',
+                services: [
+                    'Enhanced Social Media Management',
+                    'Accelerated posting: 2→4→6 posts per day after 60 days',
+                    'Double Volume AI-Powered Blog Articles',
+                    'Automated Service-Specific Promotions',
+                    'Inbound AI Voice Agent',
+                    'Website Chat Agent',
+                    'Facebook Messenger Chat Agent',
+                    'Full CRM Platform Access',
+                    'Complete SEO Package:',
+                    '  • On-Page SEO Optimization',
+                    '  • Off-Page SEO & Backlink Strategy',
+                    '  • Local SEO & Google Maps Optimization',
+                    'Contact & Lead Management',
+                    'Automated Email & SMS Campaigns',
+                    'Landing Pages & Funnel Builder',
+                    'Appointment Scheduling & Calendar Integration'
+                ]
+            };
+
+            try {
+                // Load Kynex logo
+                const logoUrl = 'https://storage.googleapis.com/msgsndr/7B7hypffudRttLjxo7Lj/media/67b24d5e2aa0e97738ee6cc9.png';
+                const img = await loadImage(logoUrl);
+
+                // Cover Page
+                doc.addImage(img, 'PNG', 70, 20, 70, 25);
+
+                // Title
+                doc.setFontSize(24);
+                doc.setTextColor(51, 51, 51);
+                doc.text('Service Agreement Proposal', 105, 60, { align: 'center' });
+
+                // Client Info
+                doc.setFontSize(16);
+                doc.setTextColor(102, 126, 234);
+                doc.text(`Prepared for: ${data.clientName}`, 105, 75, { align: 'center' });
+
+                doc.setFontSize(10);
+                doc.setTextColor(102, 102, 102);
+                doc.text(formatDate(data.agreementDate), 105, 82, { align: 'center' });
+
+                // Package Info Box
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.5);
+                doc.rect(20, 95, 170, 35);
+
+                doc.setFontSize(14);
+                doc.setTextColor(102, 126, 234);
+                doc.text(packageInfo.name, 105, 103, { align: 'center' });
+
+                doc.setFontSize(11);
+                doc.setTextColor(51, 51, 51);
+                doc.text(`Monthly: ${packageInfo.monthly}  |  Setup Fee: ${packageInfo.setup}`, 105, 112, { align: 'center' });
+                doc.text(`Annual Payment: ${packageInfo.annual} (Setup Fee Waived + 2 Months Free)`, 105, 120, { align: 'center' });
+
+                // Services Included
+                doc.setFontSize(14);
+                doc.setTextColor(102, 126, 234);
+                doc.text('Services Included:', 20, 145);
+
+                doc.setFontSize(9);
+                doc.setTextColor(51, 51, 51);
+                let yPos = 153;
+                packageInfo.services.forEach((service, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(`• ${service}`, 25, yPos);
+                    yPos += 6;
+                });
+
+                // AI Usage Charges Section
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                } else {
+                    yPos += 10;
+                }
+
+                doc.setFontSize(12);
+                doc.setTextColor(102, 126, 234);
+                doc.text('Optional AI Usage Charges:', 20, yPos);
+                yPos += 8;
+
+                doc.setFontSize(9);
+                doc.setTextColor(51, 51, 51);
+                doc.text(`• AI Voice Agent: ${data.voiceAgentRate} per minute`, 25, yPos);
+                yPos += 6;
+                doc.text(`• AI Chat Agent: ${data.chatAgentRate} per message`, 25, yPos);
+                yPos += 6;
+                if (data.additionalUsageNote) {
+                    doc.text(`• ${data.additionalUsageNote}`, 25, yPos);
+                    yPos += 6;
+                }
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(153, 153, 153);
+                doc.text('This proposal is valid for ' + data.priceValidityDays + ' days from the date above.', 105, 285, { align: 'center' });
+
+                // Start Agreement on new page
+                doc.addPage();
+
+                // Generate full agreement text
+                let agreementText = '';
+                if (agreementType === 'local') {
+                    agreementText = generateLocalPackage(data);
+                } else if (agreementType === 'seo') {
+                    agreementText = generateSEOPackage(data);
+                }
+
+                // Add agreement text with proper formatting
+                doc.setFontSize(9);
+                doc.setTextColor(0, 0, 0);
+
+                const lines = doc.splitTextToSize(agreementText, 170);
+                let y = 20;
+                const pageHeight = 280;
+
+                for (let i = 0; i < lines.length; i++) {
+                    if (y > pageHeight) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    const line = lines[i];
+
+                    // Check for section headers and make them bold
+                    if (line.match(/^[0-9]+\./)) {
+                        doc.setFont(undefined, 'bold');
+                        doc.setFontSize(10);
+                    } else if (line.includes('CLIENT') || line.includes('CONSULTANT')) {
+                        doc.setFont(undefined, 'bold');
+                        doc.setFontSize(11);
+                    } else {
+                        doc.setFont(undefined, 'normal');
+                        doc.setFontSize(9);
+                    }
+
+                    doc.text(line, 20, y);
+                    y += 5;
+                }
+
+                // Add signature blocks on a new page for DocuSign
+                doc.addPage();
+                y = 30;
+
+                // CLIENT Signature Block
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('CLIENT', 20, y);
+                y += 10;
+
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text(data.clientName, 20, y);
+                y += 15;
+
+                // Date line
+                doc.setDrawColor(0, 0, 0);
+                doc.setLineWidth(0.3);
+                doc.line(20, y, 90, y);
+                doc.setFontSize(9);
+                doc.text('Date', 20, y + 5);
+                y += 15;
+
+                // Signature line
+                doc.line(20, y, 90, y);
+                doc.text('Signature', 20, y + 5);
+                y += 15;
+
+                // Print Name line
+                doc.line(20, y, 90, y);
+                doc.text('Print Name', 20, y + 5);
+                y += 15;
+
+                // Title line
+                doc.line(20, y, 90, y);
+                doc.text('Title', 20, y + 5);
+                y += 30;
+
+                // CONSULTANT Signature Block
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('CONSULTANT', 20, y);
+                y += 10;
+
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                const consultantText = data.consultantDBA ? `${data.consultantName} dba ${data.consultantDBA}` : data.consultantName;
+                doc.text(consultantText, 20, y);
+                y += 15;
+
+                // Date line
+                doc.line(20, y, 90, y);
+                doc.setFontSize(9);
+                doc.text('Date', 20, y + 5);
+                y += 15;
+
+                // Signature line
+                doc.line(20, y, 90, y);
+                doc.text('Signature', 20, y + 5);
+                y += 15;
+
+                // Print Name line
+                doc.line(20, y, 90, y);
+                doc.text('Print Name', 20, y + 5);
+                y += 15;
+
+                // Title line
+                doc.line(20, y, 90, y);
+                doc.text('Title', 20, y + 5);
+
+                // Save the PDF
+                const fileName = `Kynex-Agreement-${data.clientName.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+                doc.save(fileName);
+
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('There was an error generating the PDF. Please try again or use the text download option.');
+            }
+        }
+
+        function loadImage(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
         }
 
         function formatDate(dateString) {
