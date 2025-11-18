@@ -960,6 +960,12 @@
 
                 // Add-on Services (if any selected)
                 if (data.addonStatewideSEO || data.addonNationwideSEO || data.addonAdManagement || data.addonAvatarVideos || data.addonInteractiveAvatar) {
+                    // Check if we need a new page
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+
                     yPos += 5;
                     doc.setFontSize(14);
                     doc.setFont(undefined, 'bold');
@@ -968,6 +974,10 @@
                     yPos += 10;
 
                     if (data.addonStatewideSEO) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(240, 253, 244);
                         doc.setDrawColor(34, 197, 94);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -984,6 +994,10 @@
                     }
 
                     if (data.addonNationwideSEO) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(240, 253, 244);
                         doc.setDrawColor(34, 197, 94);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -1000,6 +1014,10 @@
                     }
 
                     if (data.addonAdManagement) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(255, 251, 240);
                         doc.setDrawColor(251, 191, 36);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -1016,6 +1034,10 @@
                     }
 
                     if (data.addonAvatarVideos) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(240, 253, 244);
                         doc.setDrawColor(34, 197, 94);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -1032,6 +1054,10 @@
                     }
 
                     if (data.addonInteractiveAvatar) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(245, 243, 255);
                         doc.setDrawColor(139, 92, 246);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -1048,6 +1074,10 @@
                     }
 
                     if (data.customServices && data.customServices.trim()) {
+                        if (yPos > 260) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
                         doc.setFillColor(240, 248, 255);
                         doc.setDrawColor(100, 149, 237);
                         doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
@@ -1067,6 +1097,39 @@
                         });
                         yPos = customY + 6;
                     }
+                }
+
+                // Custom services standalone (if no other add-ons selected)
+                if (!data.addonStatewideSEO && !data.addonNationwideSEO && !data.addonAdManagement && !data.addonAvatarVideos && !data.addonInteractiveAvatar && data.customServices && data.customServices.trim()) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    yPos += 5;
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(102, 126, 234);
+                    doc.text('Additional Custom Services', 20, yPos);
+                    yPos += 10;
+
+                    doc.setFillColor(240, 248, 255);
+                    doc.setDrawColor(100, 149, 237);
+                    doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
+
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(30, 64, 175);
+                    doc.text('CUSTOM: Additional Services', 25, yPos);
+
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, 'normal');
+                    const customLines = doc.splitTextToSize(data.customServices.trim(), 160);
+                    let customY = yPos + 5;
+                    customLines.forEach(line => {
+                        doc.text(line, 25, customY);
+                        customY += 4;
+                    });
+                    yPos = customY + 6;
                 }
 
                 // Usage-Based Charges Section
@@ -1141,12 +1204,23 @@
                 const pageHeight = 280;
                 const minSpaceForHeader = 25; // Minimum space needed for header + some content
 
+                // Find where section 9 starts and IN WITNESS WHEREOF
+                let section9StartIndex = -1;
                 for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/^9\.\s+APPLICABLE LAW/)) {
+                        section9StartIndex = i;
+                        break;
+                    }
+                }
+
+                // Render everything up to section 9
+                const endIndex = section9StartIndex > -1 ? section9StartIndex : lines.length;
+
+                for (let i = 0; i < endIndex; i++) {
                     const line = lines[i];
                     const isMainSection = line.match(/^[0-9]+\.\s+[A-Z]/);
                     const isSubSection = line.match(/^[0-9]+\.[0-9]+/);
-                    const isSignatureHeader = line.match(/^(CLIENT|CONSULTANT)$/);
-                    const isHeader = isMainSection || isSubSection || isSignatureHeader;
+                    const isHeader = isMainSection || isSubSection;
 
                     // Check if we need a new page
                     if (y > pageHeight) {
@@ -1173,13 +1247,6 @@
                         doc.setTextColor(51, 51, 51);
                         y += 2;
                     }
-                    // Signature headers
-                    else if (isSignatureHeader) {
-                        doc.setFont(undefined, 'bold');
-                        doc.setFontSize(sectionHeaderSize);
-                        doc.setTextColor(102, 126, 234);
-                        y += 3;
-                    }
                     // Normal text
                     else {
                         doc.setFont(undefined, 'normal');
@@ -1191,15 +1258,52 @@
                     y += 5;
                 }
 
-                // Add signature blocks - check if we need a new page
-                const signatureBlockHeight = 150; // Approximate height needed for both signature blocks
+                // Now handle section 9, IN WITNESS WHEREOF, and signatures together on final page
+                // Calculate approximate space needed
+                const section9Lines = section9StartIndex > -1 ? lines.slice(section9StartIndex) : [];
+                const section9Height = section9Lines.length * 5 + 20; // Approximate
+                const signatureBlockHeight = 150;
+                const totalFinalPageHeight = section9Height + signatureBlockHeight;
 
-                if ((pageHeight - y) < signatureBlockHeight) {
-                    doc.addPage();
-                    y = 20;
-                } else {
-                    y += 10; // Add some spacing before signatures
+                // Always start a new page for section 9 and signatures
+                doc.addPage();
+                y = 20;
+
+                // Render section 9 and IN WITNESS WHEREOF
+                if (section9StartIndex > -1) {
+                    for (let i = section9StartIndex; i < lines.length; i++) {
+                        const line = lines[i];
+                        const isMainSection = line.match(/^9\.\s+APPLICABLE LAW/);
+                        const isWitnessWhereof = line.match(/^IN WITNESS WHEREOF/);
+
+                        // Section 9 header
+                        if (isMainSection) {
+                            doc.setFont(undefined, 'bold');
+                            doc.setFontSize(sectionHeaderSize);
+                            doc.setTextColor(102, 126, 234);
+                            y += 3;
+                        }
+                        // IN WITNESS WHEREOF
+                        else if (isWitnessWhereof) {
+                            y += 5; // Extra space before
+                            doc.setFont(undefined, 'bold');
+                            doc.setFontSize(normalFontSize);
+                            doc.setTextColor(51, 51, 51);
+                        }
+                        // Normal text
+                        else {
+                            doc.setFont(undefined, 'normal');
+                            doc.setFontSize(normalFontSize);
+                            doc.setTextColor(51, 51, 51);
+                        }
+
+                        doc.text(line, 20, y);
+                        y += 5;
+                    }
                 }
+
+                // Add spacing before signatures
+                y += 10;
 
                 // CLIENT Signature Block
                 doc.setFontSize(14);
