@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulting Agreement Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-download {
+            background: #10b981;
+            color: white;
+            display: none;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #dc2626;
+        }
+
+        #output {
+            margin-top: 30px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 2px solid #e5e7eb;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            display: none;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .agreement-type {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Consulting Agreement Generator</h1>
+        <p class="subtitle">Fill out the form below to generate your consulting agreement</p>
+
+        <form id="agreementForm">
+            <div class="agreement-type">
+                <div class="form-group">
+                    <label for="agreementType">Agreement Type <span class="required">*</span></label>
+                    <select id="agreementType" required>
+                        <option value="">-- Select Agreement Type --</option>
+                        <option value="local">$1,499/month - AI Content & Automation (Local Package)</option>
+                        <option value="seo">$2,999/month - AI Content, Automation & SEO Services</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Agreement Details</div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="agreementDate">Agreement Date <span class="required">*</span></label>
+                        <input type="date" id="agreementDate" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Client Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientName">Client Name <span class="required">*</span></label>
+                        <input type="text" id="clientName" placeholder="e.g., ABC Corporation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientEntityType">Client Legal Entity Type <span class="required">*</span></label>
+                        <input type="text" id="clientEntityType" placeholder="e.g., LLC, Corporation, Sole Proprietorship" required>
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="clientAddress">Client Principal Place of Business Address <span class="required">*</span></label>
+                        <textarea id="clientAddress" placeholder="e.g., 123 Main Street, Suite 100, Charlotte, NC 28202" required></textarea>
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="clientBusiness">Client's Business/Services Description <span class="required">*</span></label>
+                        <input type="text" id="clientBusiness" placeholder="e.g., real estate services, legal services, consulting" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Consultant Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="consultantName">Consultant Name <span class="required">*</span></label>
+                        <input type="text" id="consultantName" placeholder="e.g., John Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="consultantDBA">Consultant DBA (if any)</label>
+                        <input type="text" id="consultantDBA" placeholder="e.g., Smith Digital Solutions">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="consultantEntityType">Consultant Legal Entity Type <span class="required">*</span></label>
+                        <input type="text" id="consultantEntityType" placeholder="e.g., LLC, Sole Proprietorship" required>
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="consultantAddress">Consultant Principal Place of Business Address <span class="required">*</span></label>
+                        <textarea id="consultantAddress" placeholder="e.g., 456 Business Blvd, Charlotte, NC 28203" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Service Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="serviceSpecific">Service-Specific Automation <span class="required">*</span></label>
+                        <input type="text" id="serviceSpecific" placeholder="e.g., Real Estate Listings, Legal Case Studies" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="serviceItem">Service-Specific Item <span class="required">*</span></label>
+                        <input type="text" id="serviceItem" placeholder="e.g., real estate listings, case studies" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="crmPlatformName">CRM Platform Name <span class="required">*</span></label>
+                        <input type="text" id="crmPlatformName" placeholder="e.g., ClientConnect Pro" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="crmSoftware">CRM Software <span class="required">*</span></label>
+                        <input type="text" id="crmSoftware" placeholder="e.g., HighLevel, GoHighLevel" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Payment & Legal Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method <span class="required">*</span></label>
+                        <input type="text" id="paymentMethod" placeholder="e.g., credit card, ACH, or wire transfer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="priceValidityDays">Price Validity (Number of Days) <span class="required">*</span></label>
+                        <input type="number" id="priceValidityDays" placeholder="e.g., 21" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="priceValidityEndDate">Price Validity End Date <span class="required">*</span></label>
+                        <input type="date" id="priceValidityEndDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="governingState">Governing State <span class="required">*</span></label>
+                        <input type="text" id="governingState" placeholder="e.g., North Carolina" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="governingCounty">Governing County <span class="required">*</span></label>
+                        <input type="text" id="governingCounty" placeholder="e.g., Mecklenburg County, North Carolina" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-generate">Generate Agreement</button>
+                <button type="button" class="btn-download" id="downloadBtn">Download as Text File</button>
+                <button type="button" class="btn-clear" id="clearBtn">Clear Form</button>
+            </div>
+        </form>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('agreementForm');
+        const output = document.getElementById('output');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Load saved form data from localStorage
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('agreementFormData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = data[key];
+                    }
+                });
+            }
+        });
+
+        // Save form data to localStorage on input
+        form.addEventListener('input', () => {
+            const formData = {};
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                formData[input.id] = input.value;
+            });
+            localStorage.setItem('agreementFormData', JSON.stringify(formData));
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            generateAgreement();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear the form?')) {
+                form.reset();
+                output.style.display = 'none';
+                downloadBtn.style.display = 'none';
+                localStorage.removeItem('agreementFormData');
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const text = output.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'consulting-agreement-' + new Date().toISOString().split('T')[0] + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        function generateAgreement() {
+            const agreementType = document.getElementById('agreementType').value;
+            const data = {
+                agreementDate: document.getElementById('agreementDate').value,
+                clientName: document.getElementById('clientName').value,
+                clientEntityType: document.getElementById('clientEntityType').value,
+                clientAddress: document.getElementById('clientAddress').value,
+                clientBusiness: document.getElementById('clientBusiness').value,
+                consultantName: document.getElementById('consultantName').value,
+                consultantDBA: document.getElementById('consultantDBA').value,
+                consultantEntityType: document.getElementById('consultantEntityType').value,
+                consultantAddress: document.getElementById('consultantAddress').value,
+                serviceSpecific: document.getElementById('serviceSpecific').value,
+                serviceItem: document.getElementById('serviceItem').value,
+                crmPlatformName: document.getElementById('crmPlatformName').value,
+                crmSoftware: document.getElementById('crmSoftware').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                priceValidityDays: document.getElementById('priceValidityDays').value,
+                priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
+                governingState: document.getElementById('governingState').value,
+                governingCounty: document.getElementById('governingCounty').value
+            };
+
+            let agreement = '';
+
+            if (agreementType === 'local') {
+                agreement = generateLocalPackage(data);
+            } else if (agreementType === 'seo') {
+                agreement = generateSEOPackage(data);
+            }
+
+            output.textContent = agreement;
+            output.style.display = 'block';
+            downloadBtn.style.display = 'block';
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function generateLocalPackage(data) {
+            const dbaText = data.consultantDBA ? ` dba ${data.consultantDBA}` : '';
+            const formattedDate = formatDate(data.agreementDate);
+            const formattedEndDate = formatDate(data.priceValidityEndDate);
+
+            return `Consulting Agreement for AI Content & Automation $2000 down and $1499 a month Package Local
+between ${data.clientName} and ${data.consultantName}
+${formattedDate}
+
+This Consulting Agreement ("Agreement") states the terms and conditions that govern the contractual agreement between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having its principal address at ${data.consultantAddress} ("Consultant").
+
+WHEREAS, Consultant will design a custom business strategy for Client using Artificial Intelligence ("AI") and involving automated content creation to enhance awareness, interest, and promote Client's ${data.clientBusiness} ("Main Service"), and Client desires to engage Consultant to implement, manage, and optimize this strategy.
+
+NOW, THEREFORE, in consideration of the mutual covenants and promises made by the Parties to this Agreement, Client and Consultant (individually, each a "Party", and collectively, the "Parties") covenant and agree as follows:
+
+1. CONSULTANT'S DUTIES AND OBLIGATIONS
+
+1.1. Social Media Management: Consultant will assume management of Client's official LinkedIn, Facebook, and other social media platforms mutually agreed-upon in writing, to produce and automate engaging content an average of five days a week ("Social Media Content Generation").
+
+1.1.1. Social media content may be supplied by the Client via a content repository (e.g., Google Drive), AI-generated, and/or a combination of the two (Client content enhanced by AI).
+
+1.1.2. Daily content will begin with one (1) post per day, per platform for the first 30 days, and increase to two (2) posts per day, per platform for the second 30 days, and increase again to three (3) posts per day, per platform after 60 days.
+
+1.2. Blog Article Creation: Consultant will use AI tools to create blog articles optimized to help Client's website show up in Google searches, AI chatbots like ChatGPT, and answer boxes at the top of search results.
+
+1.3. ${data.serviceSpecific}: Consultant will automate the promotion of Client's ${data.serviceItem} across multiple digital marketing channels, including social media platforms and email campaigns. Client has the right, but not obligation, to review all such posts before they are published.
+
+1.3.1. Client agrees to provide all necessary listing information (property details, images, pricing, and features) through Consultant's designated intake form for each property to be promoted. Consultant shall not be liable for any errors or omissions whatsoever.
+
+1.3.1.1. Alternative Data Collection: Consultant may offer AI-assisted data extraction from publicly available listing web pages as a convenience option, subject to technical availability, website restrictions, and the following Client acknowledgements:
+
+1.3.1.1.1. AI extraction may not achieve 100% accuracy.
+
+1.3.1.1.2. Client must electronically review and approve all extracted content before promotion.
+
+1.3.1.1.3. Approved content will be posted within 48 hours of Client's approval.
+
+1.3.1.1.4. Consultant shall not be liable for any errors or omissions whatsoever.
+
+1.4. Inbound Voice Agent: Consultant will build an inbound AI Voice Agent Support Specialist to pre-screen calls, schedule appointments with qualified leads, and answer general questions for Client. When appropriate, the Inbound Voice Agent will immediately transfer calls to a phone number chosen by Client.
+
+1.5. Website Chat Agent: Consultant will build an AI Chat Agent Support Specialist to integrate with Client's existing website to answer questions for visitors, pre-qualify leads, and schedule appointments.
+
+1.6. Facebook Chat Agent: Consultant will build a Facebook Messenger AI Chat Agent Support Specialist to integrate with Client's official Facebook page to answer questions for visitors, pre-qualify leads, and schedule appointments.
+
+1.7. CRM Platform: Consultant will provide Client with access to the ${data.crmPlatformName} CRM (Customer Relationship Management) platform, a branded version of the ${data.crmSoftware} CRM platform, which includes:
+• Contact and lead management system
+• Automated email and SMS marketing campaigns
+• Landing page and funnel builder
+• Appointment scheduling and calendar integration
+• Workflow automation and follow-up sequences
+
+Certain CRM features or services may incur additional per-use fees (such as SMS message credits, phone numbers, or premium integrations) and will only be activated with Client's prior written approval.
+
+1.8. Additional Services: Consultant may offer additional services not listed in this Agreement that may be provided at no additional charge or may incur additional fees, depending on the specific service requested by Client.
+
+2. CLIENT'S DUTIES AND OBLIGATIONS
+[This section was not visible on the shared page. Please scroll to page 3 for me to add this section.]
+
+3. COMPENSATION
+
+3.1. Payment Options: Client agrees to one of the following payment structures (select one):
+
+Option A: Monthly Payments
+Client shall pay Consultant consecutive monthly installments of One Thousand Four Hundred Ninety-Nine Dollars (USD $1,499.00).
+The first monthly installment is due upon execution of this Agreement, with subsequent payments due on the same day of each month thereafter for the duration of the term.
+
+Option B: Upfront Annual Payment (Includes Two Months Free)
+Client shall pay Consultant a single upfront payment of Fifteen Thousand Dollars (USD $15,000.00), due upon execution of this Agreement.
+This non-refundable payment covers a twelve (12) month term, granting a discount equivalent to two (2) months of service compared to the monthly payment option.
+
+3.2. Payment Method: Payments must be made by ${data.paymentMethod}. Consultant will provide a secure payment link or banking details for this purpose.
+
+3.3. Price Validity: The compensation amount outlined in Section 3.1 of this Agreement is valid for a period of ${data.priceValidityDays} calendar days from the date of this Agreement, expiring on ${formattedEndDate}. If the Agreement is not fully executed by both Parties by this date, Consultant reserves the right to revise the compensation amount before finalizing the Agreement.
+
+4. OPTIONAL ADDITIONAL CHARGES FOR AI SERVICES
+
+[Section 4.1 was not visible on the shared page. Please scroll to page 4 or 5 for me to add this section.]
+
+4.2. Interactive AI Chat Agent Charges: Client acknowledges that the use of interactive AI chat agents (e.g., via Facebook Messenger and/or a website support tool) will incur a charge of [e.g., $0.15] per message. Like the AI voice agent charges, this fee is in addition to Consultant's compensation outlined in Section 3, and may be adjusted in response to market fluctuations. Consultant will inform Client of any rate changes in advance. If Client chooses not to use AI chat agents, no additional per-message charges will be accrued.
+
+4.3. Future Services and Charges: Consultant may offer additional AI-based services in the future that involve per-minute and/or per-usage charges (e.g., AI video, video avatars). In all such cases, Consultant will fully disclose the applicable fees to Client before the service is utilized, ensuring that Client can make an informed decision.
+
+4.4. Disclosure of Fees: Consultant is committed to disclosing all per-minute and per-usage charges associated with AI services. Consultant will provide Client with all relevant pricing information in advance, allowing Client to evaluate and approve any additional costs before they are incurred.
+
+5. PROJECT FULFILLMENT
+
+5.1. Project Commencement and Onboarding Period
+
+5.1.1. Commencement Date: The official project start date will occur within [e.g., fifteen (15)] calendar days of Consultant receiving the initial Onboarding Fee from Client (see Section 3.1.1). Consultant will provide written notice to Client via email on or before the Commencement Date to confirm that information gathering and core work has begun.
+
+5.1.2. Onboarding Period: The initial onboarding, system setup, integration, and configuration of all services will be completed within a period of up to [e.g., forty-five (45)] calendar days from the Commencement Date.
+
+5.1.3. Delivery of Initial Deliverables: The delivery of the first automated functions or client-facing deliverables is targeted to occur at the conclusion of the [e.g., forty-five (45)] day Onboarding Period. Consultant may, at its sole discretion, implement certain components or modules earlier than this date, but is under no obligation to provide deliverables before the conclusion of the stated timeline.
+
+5.2. Fulfillment Criteria: This Agreement shall be considered fulfilled, and the Project deemed complete, when all the following conditions have been met:
+
+5.2.1. Completion of Services: Consultant has successfully completed the delivery, implementation, and optimization of all services detailed in Section 1 to the satisfaction of Client, including all tasks, deliverables, and testing as outlined.
+
+5.2.2. Social Media Content Scheduling: Consultant has designed, integrated, automated, and tested social media content for Client's top [e.g., three (3)] preferred social media pages, with content scheduled and automated for a minimum of [e.g., 90 days] following the date of Final Approval, as defined in Section 5.2.5 herein.
+
+5.2.3. Documentation Delivery: Consultant has provided Client with comprehensive documentation for all services described in Section 1, enabling Client to independently manage these services post-completion.
+
+5.2.4. Full Payment of Invoiced Fees Due: Client has rendered full payment of all fixed fees (e.g., Onboarding Fee, Monthly Services Fees) and all invoiced variable charges (e.g., AI per-minute/per-usage fees) that are due up to the date of Project completion, as agreed upon in Sections 3 (Compensation) and 4 (Optional Additional Charges for AI Services).
+
+5.2.5. Final Approval: Client shall conduct a final review of the services rendered and provide written approval of the completion of the Project. If Client does not provide written approval or express any concerns in writing to Consultant within [e.g., ten (10)] business days following Consultant's notification of completion, the Project will be deemed complete.
+
+5.3. Completion Date: The official Completion Date shall be the date on which the last of the Fulfillment Criteria (Sections 5.2.1 through 5.2.5) are satisfied. This date may occur earlier than twelve (12) months from the Commencement Date, depending on the actual progress and overlap of the various service timelines.
+
+6. INTELLECTUAL PROPERTY RIGHTS
+
+6.1. Intellectual Property Rights: The Parties agree that all Intellectual Property ("IP") created during the course of this Agreement, including but not limited to original strategies, software code, documentation, training materials, algorithms, logos, graphics, artwork, trademarks, and copyrights, shall be owned by the Party that creates it. Consultant grants Client a perpetual, non-exclusive, royalty-free license to use any IP developed by Consultant under this Agreement for the purposes outlined herein.
+
+6.2. Trade Secrets and Confidential Information: Both Parties acknowledge that they may have access to trade secrets and proprietary information belonging to the other Party during the performance of this Agreement. Each Party agrees to protect the confidentiality of such information and to use it solely for fulfilling their obligations under this Agreement.
+
+6.3. Pre-Existing and Third-Party IP: This Agreement does not affect the ownership of any IP that was independently developed by either Party prior to the Agreement or that is owned by third parties. Both Parties agree not to use or incorporate any third-party IP without proper authorization or licensing.
+
+7. NO MODIFICATION UNLESS IN WRITING
+
+No modification of this Agreement shall be valid unless put forth in writing and agreed upon as indicated by the authorized signatures of both Parties.
+
+8. SEVERABILITY
+
+In the event that a court finds any provision of this Agreement invalid and/or unenforceable, the parties agree that the remaining provisions shall remain valid and in force.
+
+9. APPLICABLE LAW
+
+This Consulting Agreement and the interpretation of its terms shall be governed by and construed in accordance with the laws of the United States of America, in the State of ${data.governingState} and subject to the exclusive jurisdiction of the federal and state courts located in ${data.governingCounty}.
+
+IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, both Parties by its duly authorized officer(s), as of the day and year set forth below, with the latter of the two dates defining the term "Full Execution" as used herein.
+
+CLIENT
+${data.clientName}
+
+________________________ Date
+
+_______________________________ Signature
+
+_______________________________ Print Name
+
+_______________________________ Title
+
+
+CONSULTANT
+${data.consultantName}${dbaText}
+
+________________________ Date
+
+_______________________________ Signature
+
+_______________________________ Print Name
+
+_______________________________ Title`;
+        }
+
+        function generateSEOPackage(data) {
+            const dbaText = data.consultantDBA ? ` dba ${data.consultantDBA}` : '';
+            const formattedDate = formatDate(data.agreementDate);
+            const formattedEndDate = formatDate(data.priceValidityEndDate);
+
+            return `Consulting Agreement for AI Content, Automation & SEO Services $5000 down and $2999 a month Package
+between ${data.clientName} and ${data.consultantName}
+${formattedDate}
+
+This Consulting Agreement ("Agreement") states the terms and conditions that govern the contractual agreement between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having a principal address at ${data.consultantAddress} ("Consultant").
+
+WHEREAS, Consultant will design and implement a custom business strategy for Client using Artificial Intelligence ("AI"), digital automation, SEO optimization, and automated content creation to promote Client's ${data.clientBusiness} ("Main Service"), and Client desires to engage Consultant to execute and manage this strategy.
+
+NOW, THEREFORE, the Parties agree as follows:
+
+1. CONSULTANT'S DUTIES AND OBLIGATIONS
+
+1.1. Social Media Management
+Consultant shall manage Client's official LinkedIn, Facebook, and any additional mutually agreed-upon social media platforms.
+
+1.1.1. Posting Frequency
+Daily content generation and automation shall occur as follows:
+
+Days 1–30:
+Two (2) posts per day, per platform
+
+Days 31–60:
+Four (4) posts per day, per platform
+
+After 60 Days:
+Six (6) posts per day, per platform
+
+(This reflects a doubling of the original content output.)
+
+1.1.2. Content Sources
+Content may be:
+• Provided by Client via shared repository
+• AI-generated
+• Client content enhanced by AI
+
+1.2. Blog Article Creation
+Consultant will generate double the standard blog volume, using AI tools to produce high-quality SEO-optimized blog articles intended to improve visibility on Google, AI chatbots (e.g., ChatGPT search results), answer box visibility, and organic ranking.
+
+1.3. Service-Specific Automation
+Consultant will automate the promotion of Client's ${data.serviceItem} across social platforms, email, and other digital channels.
+
+1.3.1. Client Responsibilities
+Client will provide all required data (e.g., listing details, images, features) using Consultant's intake process.
+
+1.3.1.1. Optional AI-Assisted Data Extraction
+AI extraction may be offered but must be reviewed and approved by Client prior to publication.
+
+1.4. Inbound Voice Agent
+Consultant shall provide an AI-powered voice agent for call screening, appointment scheduling, and inquiries, with transfer capabilities.
+
+1.5. Website Chat Agent
+Consultant will integrate an AI chat agent on Client's website.
+
+1.6. Facebook Chat Agent
+Consultant will integrate an AI chat agent on Client's Facebook page.
+
+1.7. CRM Platform Access
+Client shall receive access to Consultant's branded version of the ${data.crmPlatformName} CRM system, including:
+• Lead/contact management
+• Automated email & SMS
+• Appointment scheduling
+• Landing pages & funnels
+• Workflow automation
+
+Certain items such as phone numbers, SMS credits, or premium integrations may incur additional charges with prior approval.
+
+1.8. SEO PACKAGE (Included in $2,999 Package)
+Consultant shall deliver an SEO package including:
+
+1.8.1. On-Page SEO
+• SEO optimization of website pages
+• Keyword optimization
+• Metadata enhancements
+• Internal linking structure improvements
+
+1.8.2. Off-Page SEO
+• Backlink strategy
+• Directory submissions
+• Authority-building strategies
+
+1.8.3. Local SEO (Maps Optimization)
+Google Business Profile optimization for one major city or metro area, including:
+• Profile optimization
+• Category optimization
+• Local keyword mapping
+• Review strategy guidance
+• Local ranking enhancement tactics
+
+1.9. Additional Services
+Additional services may be provided at no charge or at additional cost depending on the request.
+
+2. CLIENT DUTIES AND OBLIGATIONS
+Client shall:
+• Provide required information, access credentials, branding materials, and approvals in a timely manner
+• Review and approve content when required
+• Pay all fees as required under this Agreement
+• Provide accurate business information for SEO and Google Maps optimization
+• Maintain responsibility for the accuracy of any supplied data
+
+3. COMPENSATION
+
+3.1. Payment Options (Updated for $2,999 Package)
+
+Option A: Monthly Payments
+Client shall pay:
+Two Thousand Nine Hundred Ninety-Nine Dollars (USD $2,999.00) per month
+• First payment due at execution
+• Recurring payments due on the same day each month
+
+Option B: Upfront Annual Payment (Includes Two Months Free)
+Client may pay:
+Thirty Thousand Dollars (USD $30,000.00) upfront (non-refundable)
+This covers 12 months and includes a discount equal to two free months.
+
+3.2. Payment Method
+Accepted forms: ${data.paymentMethod}.
+
+3.3. Price Validity
+Pricing is valid for ${data.priceValidityDays} days, expiring on ${formattedEndDate}.
+
+4. OPTIONAL ADDITIONAL AI SERVICE FEES
+
+4.1. AI Voice Agent Usage Charges
+(Insert your standard per-minute rate)
+
+4.2. Interactive AI Chat Agent Charges
+Client acknowledges usage-based fees of [e.g., $0.15 per message].
+
+4.3. Future AI Services
+Any new AI-based services will be disclosed before use.
+
+4.4. Fee Transparency
+Consultant will provide full pricing disclosure for any usage-based fees.
+
+5. PROJECT FULFILLMENT
+(Same structure as original—updated only for compatibility. Let me know if you want expanded timelines or modifications.)
+
+6. INTELLECTUAL PROPERTY RIGHTS
+
+6.1. Intellectual Property Rights: The Parties agree that all Intellectual Property ("IP") created during the course of this Agreement, including but not limited to original strategies, software code, documentation, training materials, algorithms, logos, graphics, artwork, trademarks, and copyrights, shall be owned by the Party that creates it. Consultant grants Client a perpetual, non-exclusive, royalty-free license to use any IP developed by Consultant under this Agreement for the purposes outlined herein.
+
+6.2. Trade Secrets and Confidential Information: Both Parties acknowledge that they may have access to trade secrets and proprietary information belonging to the other Party during the performance of this Agreement. Each Party agrees to protect the confidentiality of such information and to use it solely for fulfilling their obligations under this Agreement.
+
+6.3. Pre-Existing and Third-Party IP: This Agreement does not affect the ownership of any IP that was independently developed by either Party prior to the Agreement or that is owned by third parties. Both Parties agree not to use or incorporate any third-party IP without proper authorization or licensing.
+
+7. NO MODIFICATION UNLESS IN WRITING
+No modification of this Agreement shall be valid unless put forth in writing and agreed upon as indicated by the authorized signatures of both Parties.
+
+8. SEVERABILITY
+In the event that a court finds any provision of this Agreement invalid and/or unenforceable, the parties agree that the remaining provisions shall remain valid and in force.
+
+9. APPLICABLE LAW
+This Consulting Agreement and the interpretation of its terms shall be governed by and construed in accordance with the laws of the United States of America, in the State of ${data.governingState} and subject to the exclusive jurisdiction of the federal and state courts located in ${data.governingCounty}.
+
+SIGNATURES
+
+CLIENT
+${data.clientName}
+
+________________________ Date
+
+________________________ Signature
+
+________________________ Print Name
+
+________________________ Title
+
+
+CONSULTANT
+${data.consultantName}${dbaText}
+
+________________________ Date
+
+________________________ Signature
+
+________________________ Print Name
+
+________________________ Title`;
+        }
+    </script>
+</body>
+</html>
