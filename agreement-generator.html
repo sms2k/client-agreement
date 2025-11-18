@@ -364,6 +364,50 @@
             </div>
 
             <div class="form-section">
+                <div class="section-title">Optional Add-Ons</div>
+                <div class="info-box">
+                    Select which optional add-on services you want to include in this agreement.
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="addonAdManagement" style="width: auto; margin-right: 10px;">
+                            Ad Management (5% of ad spend + $50/month hard fee)
+                        </label>
+                    </div>
+                </div>
+
+                <div id="adManagementFields" style="display: none; margin-left: 20px; margin-top: 10px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estimatedAdBudget">Estimated Monthly Ad Budget</label>
+                            <input type="text" id="estimatedAdBudget" placeholder="e.g., $2,000">
+                            <div class="helper-text">Optional - for reference only</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="addonAvatarVideos" style="width: auto; margin-right: 10px;">
+                            AI Avatar Videos ($99/month for service and tool)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="addonInteractiveAvatar" style="width: auto; margin-right: 10px;">
+                            Interactive Avatar ($5,000 one-time setup + $0.19/minute usage)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
                 <div class="section-title">Payment & Legal Details</div>
                 <div class="form-row">
                     <div class="form-group">
@@ -491,6 +535,16 @@
             }
         });
 
+        // Toggle ad management budget field
+        document.getElementById('addonAdManagement').addEventListener('change', (e) => {
+            const adManagementFields = document.getElementById('adManagementFields');
+            if (e.target.checked) {
+                adManagementFields.style.display = 'block';
+            } else {
+                adManagementFields.style.display = 'none';
+            }
+        });
+
         // Load saved form data from localStorage
         window.addEventListener('load', () => {
             const savedData = localStorage.getItem('agreementFormData');
@@ -572,7 +626,11 @@
                 priceValidityDays: document.getElementById('priceValidityDays').value,
                 priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
                 governingState: document.getElementById('governingState').value,
-                governingCounty: document.getElementById('governingCounty').value
+                governingCounty: document.getElementById('governingCounty').value,
+                addonAdManagement: document.getElementById('addonAdManagement').checked,
+                estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
+                addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
+                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked
             };
 
             let agreement = '';
@@ -616,51 +674,66 @@
                 priceValidityDays: document.getElementById('priceValidityDays').value,
                 priceValidityEndDate: document.getElementById('priceValidityEndDate').value,
                 governingState: document.getElementById('governingState').value,
-                governingCounty: document.getElementById('governingCounty').value
+                governingCounty: document.getElementById('governingCounty').value,
+                addonAdManagement: document.getElementById('addonAdManagement').checked,
+                estimatedAdBudget: document.getElementById('estimatedAdBudget').value,
+                addonAvatarVideos: document.getElementById('addonAvatarVideos').checked,
+                addonInteractiveAvatar: document.getElementById('addonInteractiveAvatar').checked
             };
 
-            const packageInfo = agreementType === 'local' ? {
-                name: 'AI Content & Automation Package',
-                monthly: '$1,499',
-                setup: '$2,000',
-                annual: '$15,000',
-                services: [
-                    'Social Media Management (LinkedIn, Facebook, etc.)',
-                    'Progressive posting: 1→2→3 posts per day after 60 days',
-                    'AI-Powered Blog Article Creation',
-                    'Automated Service-Specific Promotions',
-                    'Inbound AI Voice Agent',
-                    'Website Chat Agent',
-                    'Facebook Messenger Chat Agent',
-                    'Full CRM Platform Access',
-                    'Contact & Lead Management',
-                    'Automated Email & SMS Campaigns',
-                    'Landing Pages & Funnel Builder',
-                    'Appointment Scheduling & Calendar Integration'
-                ]
-            } : {
-                name: 'AI Content, Automation & SEO Services Package',
-                monthly: '$2,999',
-                setup: '$5,000',
-                annual: '$30,000',
-                services: [
-                    'Enhanced Social Media Management',
-                    'Accelerated posting: 2→4→6 posts per day after 60 days',
-                    'Double Volume AI-Powered Blog Articles',
-                    'Automated Service-Specific Promotions',
-                    'Inbound AI Voice Agent',
-                    'Website Chat Agent',
-                    'Facebook Messenger Chat Agent',
-                    'Full CRM Platform Access',
-                    'Complete SEO Package:',
-                    '  • On-Page SEO Optimization',
-                    '  • Off-Page SEO & Backlink Strategy',
-                    '  • Local SEO & Google Maps Optimization',
-                    'Contact & Lead Management',
-                    'Automated Email & SMS Campaigns',
-                    'Landing Pages & Funnel Builder',
-                    'Appointment Scheduling & Calendar Integration'
-                ]
+            const baseServices = agreementType === 'local' ? [
+                'Social Media Management (LinkedIn, Facebook, etc.)',
+                'Progressive posting: 1→2→3 posts per day after 60 days',
+                'AI-Powered Blog Article Creation',
+                'Automated Service-Specific Promotions',
+                'Inbound AI Voice Agent',
+                'Website Chat Agent',
+                'Facebook Messenger Chat Agent',
+                'Full CRM Platform Access',
+                'Contact & Lead Management',
+                'Automated Email & SMS Campaigns',
+                'Landing Pages & Funnel Builder',
+                'Appointment Scheduling & Calendar Integration',
+                'Reputation Management (Review Monitoring & Response)',
+                'Listing Management (65+ Directory Listings)'
+            ] : [
+                'Enhanced Social Media Management',
+                'Accelerated posting: 2→4→6 posts per day after 60 days',
+                'Double Volume AI-Powered Blog Articles',
+                'Automated Service-Specific Promotions',
+                'Inbound AI Voice Agent',
+                'Website Chat Agent',
+                'Facebook Messenger Chat Agent',
+                'Full CRM Platform Access',
+                'Complete SEO Package:',
+                '  • On-Page SEO Optimization',
+                '  • Off-Page SEO & Backlink Strategy',
+                '  • Local SEO & Google Maps Optimization',
+                'Contact & Lead Management',
+                'Automated Email & SMS Campaigns',
+                'Landing Pages & Funnel Builder',
+                'Appointment Scheduling & Calendar Integration',
+                'Reputation Management (Review Monitoring & Response)',
+                'Listing Management (65+ Directory Listings)'
+            ];
+
+            const addonServices = [];
+            if (data.addonAdManagement) {
+                addonServices.push('ADD-ON: Ad Management (5% of spend + $50/month)');
+            }
+            if (data.addonAvatarVideos) {
+                addonServices.push('ADD-ON: AI Avatar Videos ($99/month)');
+            }
+            if (data.addonInteractiveAvatar) {
+                addonServices.push('ADD-ON: Interactive Avatar ($5,000 setup + $0.19/min)');
+            }
+
+            const packageInfo = {
+                name: agreementType === 'local' ? 'AI Content & Automation Package' : 'AI Content, Automation & SEO Services Package',
+                monthly: agreementType === 'local' ? '$1,499' : '$2,999',
+                setup: agreementType === 'local' ? '$2,000' : '$5,000',
+                annual: agreementType === 'local' ? '$15,000' : '$30,000',
+                services: [...baseServices, ...addonServices]
             };
 
             try {
@@ -938,7 +1011,68 @@ NOW, THEREFORE, in consideration of the mutual covenants and promises made by th
 
 Certain CRM features or services may incur additional per-use fees (such as SMS message credits, phone numbers, or premium integrations) and will only be activated with Client's prior written approval.
 
-1.8. Additional Services: Consultant may offer additional services not listed in this Agreement that may be provided at no additional charge or may incur additional fees, depending on the specific service requested by Client.
+1.8. Reputation Management: Consultant will monitor and manage Client's online reputation across major review platforms (e.g., Google, Facebook, Yelp, industry-specific platforms). Services include:
+• Review monitoring and alerting
+• Automated review response templates
+• Review solicitation campaigns
+• Reputation dashboard and reporting
+
+1.9. Listing Management: Consultant will create, manage, and maintain a minimum of sixty-five (65) business listings across major directories, citation sites, and platforms to improve Client's online visibility and local search presence. This includes initial setup, verification where applicable, and ongoing management to ensure accuracy and consistency of business information across all platforms.
+
+1.10. Additional Services: Consultant may offer additional services not listed in this Agreement that may be provided at no additional charge or may incur additional fees, depending on the specific service requested by Client.
+
+1.11. OPTIONAL ADD-ON SERVICES
+
+The following services are available as optional add-ons to this Agreement and will only be provided if Client elects to include them:
+${data.addonAdManagement ? `
+1.11.1. Ad Management Services: Consultant will create, manage, and optimize digital advertising campaigns across platforms such as Google Ads, Facebook Ads, LinkedIn Ads, and other mutually agreed-upon platforms.
+
+1.11.1.1. Management Fee Structure:
+• Monthly Management Fee: Fifty Dollars (USD $50.00) per month
+• Performance Fee: Five percent (5%) of total advertising spend per month
+• The total monthly fee will be the $50 base fee plus 5% of Client's advertising budget
+
+1.11.1.2. Client Responsibilities: Client is responsible for providing the advertising budget directly to the advertising platforms. Consultant will have authorized access to manage the campaigns but will not handle direct fund transfers.
+
+1.11.1.3. Services Included:
+• Campaign strategy and planning
+• Ad creative development and copywriting
+• Audience targeting and segmentation
+• Budget allocation and bid management
+• A/B testing and optimization
+• Monthly performance reporting and analysis
+${data.estimatedAdBudget ? `
+1.11.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $50 (base fee) + ${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
+` : ''}
+` : ''}${data.addonAvatarVideos ? `
+1.11.2. AI Avatar Videos: Consultant will provide Client with access to AI-powered avatar video creation tools and services, allowing Client to create professional video content featuring AI-generated avatars.
+
+1.11.2.1. Monthly Fee: Ninety-Nine Dollars (USD $99.00) per month
+
+1.11.2.2. Services Included:
+• Access to AI avatar video generation platform
+• Library of customizable avatar personas
+• Video template library
+• Basic training and support for video creation
+• Monthly video generation credits as specified by the platform
+` : ''}${data.addonInteractiveAvatar ? `
+1.11.3. Interactive Avatar Services: Consultant will implement and manage an interactive AI avatar system that can engage with website visitors, customers, or event attendees in real-time conversations.
+
+1.11.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Five Thousand Dollars (USD $5,000.00). This covers:
+• Custom avatar creation and configuration
+• Integration with Client's website or platform
+• Voice and personality customization
+• Initial training and knowledge base setup
+• Testing and quality assurance
+
+1.11.3.2. Usage Charges: Client acknowledges that the use of the Interactive Avatar will incur a charge of $0.19 per minute of interactive conversation. This per-minute fee is in addition to the setup fee and covers:
+• Real-time AI processing
+• Voice synthesis
+• Natural language understanding
+• Server and bandwidth costs
+
+1.11.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
+` : ''}
 
 2. CLIENT'S DUTIES AND OBLIGATIONS
 
@@ -1142,8 +1276,71 @@ Google Business Profile optimization for one major city or metro area, including
 • Review strategy guidance
 • Local ranking enhancement tactics
 
-1.9. Additional Services
+1.9. Reputation Management
+Consultant will monitor and manage Client's online reputation across major review platforms (e.g., Google, Facebook, Yelp, industry-specific platforms). Services include:
+• Review monitoring and alerting
+• Automated review response templates
+• Review solicitation campaigns
+• Reputation dashboard and reporting
+
+1.10. Listing Management
+Consultant will create, manage, and maintain a minimum of sixty-five (65) business listings across major directories, citation sites, and platforms to improve Client's online visibility and local search presence. This includes initial setup, verification where applicable, and ongoing management to ensure accuracy and consistency of business information across all platforms.
+
+1.11. Additional Services
 Additional services may be provided at no charge or at additional cost depending on the request.
+
+1.12. OPTIONAL ADD-ON SERVICES
+
+The following services are available as optional add-ons to this Agreement and will only be provided if Client elects to include them:
+${data.addonAdManagement ? `
+1.12.1. Ad Management Services: Consultant will create, manage, and optimize digital advertising campaigns across platforms such as Google Ads, Facebook Ads, LinkedIn Ads, and other mutually agreed-upon platforms.
+
+1.12.1.1. Management Fee Structure:
+• Monthly Management Fee: Fifty Dollars (USD $50.00) per month
+• Performance Fee: Five percent (5%) of total advertising spend per month
+• The total monthly fee will be the $50 base fee plus 5% of Client's advertising budget
+
+1.12.1.2. Client Responsibilities: Client is responsible for providing the advertising budget directly to the advertising platforms. Consultant will have authorized access to manage the campaigns but will not handle direct fund transfers.
+
+1.12.1.3. Services Included:
+• Campaign strategy and planning
+• Ad creative development and copywriting
+• Audience targeting and segmentation
+• Budget allocation and bid management
+• A/B testing and optimization
+• Monthly performance reporting and analysis
+${data.estimatedAdBudget ? `
+1.12.1.4. Estimated Monthly Investment: Based on Client's indicated budget of ${data.estimatedAdBudget} per month in advertising spend, the estimated total monthly cost would be ${data.estimatedAdBudget} (ad spend) + $50 (base fee) + $${(parseFloat(data.estimatedAdBudget.replace(/[^0-9.]/g, '')) * 0.05).toFixed(2)} (5% of spend) for management services.
+` : ''}
+` : ''}${data.addonAvatarVideos ? `
+1.12.2. AI Avatar Videos: Consultant will provide Client with access to AI-powered avatar video creation tools and services, allowing Client to create professional video content featuring AI-generated avatars.
+
+1.12.2.1. Monthly Fee: Ninety-Nine Dollars (USD $99.00) per month
+
+1.12.2.2. Services Included:
+• Access to AI avatar video generation platform
+• Library of customizable avatar personas
+• Video template library
+• Basic training and support for video creation
+• Monthly video generation credits as specified by the platform
+` : ''}${data.addonInteractiveAvatar ? `
+1.12.3. Interactive Avatar Services: Consultant will implement and manage an interactive AI avatar system that can engage with website visitors, customers, or event attendees in real-time conversations.
+
+1.12.3.1. Setup Fee: Client shall pay a one-time Interactive Avatar Setup Fee of Five Thousand Dollars (USD $5,000.00). This covers:
+• Custom avatar creation and configuration
+• Integration with Client's website or platform
+• Voice and personality customization
+• Initial training and knowledge base setup
+• Testing and quality assurance
+
+1.12.3.2. Usage Charges: Client acknowledges that the use of the Interactive Avatar will incur a charge of $0.19 per minute of interactive conversation. This per-minute fee is in addition to the setup fee and covers:
+• Real-time AI processing
+• Voice synthesis
+• Natural language understanding
+• Server and bandwidth costs
+
+1.12.3.3. Billing: Interactive Avatar usage charges will be calculated monthly based on total conversation minutes and invoiced separately from the base package fees.
+` : ''}
 
 2. CLIENT DUTIES AND OBLIGATIONS
 
