@@ -1098,20 +1098,15 @@
                     y += 5;
                 }
 
-                // Add signature blocks on a new page for DocuSign
-                doc.addPage();
+                // Add signature blocks - check if we need a new page
+                const signatureBlockHeight = 150; // Approximate height needed for both signature blocks
 
-                // Signature page header
-                doc.setFontSize(16);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(102, 126, 234);
-                doc.text('Signature Page', 105, 20, { align: 'center' });
-
-                doc.setDrawColor(102, 126, 234);
-                doc.setLineWidth(0.3);
-                doc.line(30, 23, 180, 23);
-
-                y = 40;
+                if ((pageHeight - y) < signatureBlockHeight) {
+                    doc.addPage();
+                    y = 20;
+                } else {
+                    y += 10; // Add some spacing before signatures
+                }
 
                 // CLIENT Signature Block
                 doc.setFontSize(14);
@@ -1419,30 +1414,7 @@ In the event that a court finds any provision of this Agreement invalid and/or u
 
 This Consulting Agreement and the interpretation of its terms shall be governed by and construed in accordance with the laws of the United States of America, in the State of ${data.governingState} and subject to the exclusive jurisdiction of the federal and state courts located in ${data.governingCounty}.
 
-IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, both Parties by its duly authorized officer(s), as of the day and year set forth below, with the latter of the two dates defining the term "Full Execution" as used herein.
-
-CLIENT
-${data.clientName}
-
-________________________ Date
-
-_______________________________ Signature
-
-_______________________________ Print Name
-
-_______________________________ Title
-
-
-CONSULTANT
-${data.consultantName}${dbaText}
-
-________________________ Date
-
-_______________________________ Signature
-
-_______________________________ Print Name
-
-_______________________________ Title`;
+IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, both Parties by its duly authorized officer(s), as of the day and year set forth below, with the latter of the two dates defining the term "Full Execution" as used herein.`;
         }
 
         function generateSEOPackage(data) {
@@ -1690,30 +1662,7 @@ In the event that a court finds any provision of this Agreement invalid and/or u
 9. APPLICABLE LAW
 This Consulting Agreement and the interpretation of its terms shall be governed by and construed in accordance with the laws of the United States of America, in the State of ${data.governingState} and subject to the exclusive jurisdiction of the federal and state courts located in ${data.governingCounty}.
 
-SIGNATURES
-
-CLIENT
-${data.clientName}
-
-________________________ Date
-
-________________________ Signature
-
-________________________ Print Name
-
-________________________ Title
-
-
-CONSULTANT
-${data.consultantName}${dbaText}
-
-________________________ Date
-
-________________________ Signature
-
-________________________ Print Name
-
-________________________ Title`;
+IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, both Parties by its duly authorized officer(s), as of the day and year set forth below, with the latter of the two dates defining the term "Full Execution" as used herein.`;
         }
     </script>
 </body>
