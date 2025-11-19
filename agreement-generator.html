@@ -296,8 +296,8 @@
                 <div class="section-title">Consultant Information</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="consultantName">Consultant Name <span class="required">*</span></label>
-                        <input type="text" id="consultantName" value="Sellmore Solutions AI" required>
+                        <label for="consultantName">Consultant Legal Entity Name <span class="required">*</span></label>
+                        <input type="text" id="consultantName" value="SellMore Solutions LLC" required>
                     </div>
                     <div class="form-group">
                         <label for="consultantDBA">Consultant DBA (if any)</label>
@@ -811,64 +811,76 @@
                 doc.setTextColor(102, 102, 102);
                 doc.text(formatDate(data.agreementDate), 105, 100, { align: 'center' });
 
-                // Package Info Box - Enhanced Design
-                doc.setFillColor(102, 126, 234);
-                doc.roundedRect(20, 115, 170, 50, 3, 3, 'F');
-
-                doc.setFontSize(18);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(255, 255, 255);
-                doc.text(packageInfo.name, 105, 128, { align: 'center' });
-
-                doc.setFontSize(11);
-                doc.setFont(undefined, 'normal');
-                doc.text('Monthly Investment', 45, 142);
-                doc.text('Setup Fee', 105, 142, { align: 'center' });
-                doc.text('Annual Option', 160, 142, { align: 'right' });
-
-                doc.setFontSize(14);
-                doc.setFont(undefined, 'bold');
-                doc.text(packageInfo.monthly, 45, 153);
-                doc.text(packageInfo.setup, 105, 153, { align: 'center' });
-                doc.text(packageInfo.annual, 160, 153, { align: 'right' });
-
-                // Value Proposition Box
-                doc.setFillColor(240, 245, 255);
-                doc.setDrawColor(102, 126, 234);
-                doc.setLineWidth(0.3);
-                doc.roundedRect(20, 175, 170, 20, 2, 2, 'FD');
-
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(51, 51, 51);
-                doc.text('Pay Annually & Save:', 25, 185);
-                doc.setFont(undefined, 'normal');
-                doc.text(`Setup fee WAIVED + 2 months FREE (Save $${agreementType === 'local' ? '4,997' : '10,997'})`, 70, 185);
-
-                // What's Included Section Header
+                // Core Services Section Header
                 doc.setFontSize(16);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(102, 126, 234);
-                doc.text('What\'s Included', 105, 210, { align: 'center' });
+                doc.text('Core Services Included', 105, 115, { align: 'center' });
 
                 // Decorative line
                 doc.setDrawColor(102, 126, 234);
                 doc.setLineWidth(0.5);
-                doc.line(70, 213, 140, 213);
+                doc.line(60, 118, 150, 118);
 
-                // Brief overview
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
-                doc.setTextColor(51, 51, 51);
-                const overview = agreementType === 'local'
-                    ? 'A comprehensive AI-powered marketing solution designed to automate your social media, manage your online reputation, and generate quality leads through intelligent automation.'
-                    : 'An advanced AI-powered marketing and SEO solution combining automation, search optimization, and reputation management to maximize your online visibility and lead generation.';
+                // Core Services with Benefits
+                let yPos = 128;
+                const coreServicesBenefits = [
+                    {
+                        title: 'Daily Social Media Posts',
+                        benefit: 'Makes you top of mind with potential Clients.'
+                    },
+                    {
+                        title: 'Daily SEO-Optimized Blog Articles',
+                        benefit: 'Builds trust by positioning you as a thought leader in your industry.'
+                    },
+                    {
+                        title: 'Custom CRM (Client Relationship Management) Platform',
+                        benefit: 'Organizes your clients and jobs, automates follow-up, and runs targeted marketing so nothing slips through the cracks.'
+                    },
+                    {
+                        title: 'AI Agent Suite (Voice, Chat, Messenger)',
+                        benefit: 'Qualifies leads and answers questions 24/7 so you never miss an opportunity.'
+                    },
+                    {
+                        title: 'Reputation Management',
+                        benefit: 'Protects and enhances your online reputation across all major review platforms.'
+                    },
+                    {
+                        title: 'Listing Management (65+ Directories)',
+                        benefit: 'Ensures customers can find you everywhere they search online.'
+                    }
+                ];
 
-                const overviewLines = doc.splitTextToSize(overview, 160);
-                let yPos = 222;
-                overviewLines.forEach(line => {
-                    doc.text(line, 105, yPos, { align: 'center' });
-                    yPos += 5;
+                if (agreementType === 'seo') {
+                    coreServicesBenefits.push({
+                        title: 'Complete SEO Package',
+                        benefit: 'Drives more qualified traffic from Google to grow your business.'
+                    });
+                }
+
+                coreServicesBenefits.forEach((service, index) => {
+                    // Bullet circle
+                    doc.setFillColor(102, 126, 234);
+                    doc.circle(24, yPos - 2, 1.2, 'F');
+
+                    // Service title
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(51, 51, 51);
+                    doc.text(service.title, 28, yPos);
+
+                    // Benefit
+                    doc.setFontSize(9);
+                    doc.setFont(undefined, 'normal');
+                    doc.setTextColor(70, 70, 70);
+                    const benefitLines = doc.splitTextToSize(service.benefit, 160);
+                    let benefitY = yPos + 4;
+                    benefitLines.forEach(line => {
+                        doc.text(line, 28, benefitY);
+                        benefitY += 4;
+                    });
+
+                    yPos = benefitY + 6;
                 });
 
                 // Footer with validity
@@ -876,296 +888,6 @@
                 doc.setFont(undefined, 'italic');
                 doc.setTextColor(120, 120, 120);
                 doc.text(`This proposal is valid for ${data.priceValidityDays} days from ${formatDate(data.agreementDate)}`, 105, 280, { align: 'center' });
-
-                // ========== PAGE 2: Detailed Services Breakdown ==========
-                doc.addPage();
-
-                // Core Services Section
-                doc.setFontSize(16);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(102, 126, 234);
-                doc.text('Core Services Included', 20, 20);
-
-                yPos = 30;
-                const coreServices = [
-                    {
-                        title: 'Social Media Automation',
-                        desc: agreementType === 'local'
-                            ? 'Progressive content posting (1->2->3 posts daily) across LinkedIn, Facebook, and additional platforms. AI-enhanced content creation and scheduling.'
-                            : 'Accelerated content posting (2->4->6 posts daily) across LinkedIn, Facebook, and additional platforms. Double volume AI-enhanced content creation.'
-                    },
-                    {
-                        title: 'AI-Powered Blog Articles',
-                        desc: agreementType === 'local'
-                            ? 'SEO-optimized blog content designed to improve search rankings, appear in ChatGPT results, and capture featured snippets.'
-                            : 'Double volume of SEO-optimized blog articles with advanced keyword targeting, on-page optimization, and strategic internal linking.'
-                    },
-                    {
-                        title: 'Reputation Management',
-                        desc: 'Monitor and respond to reviews across Google, Facebook, Yelp, and industry platforms. Automated review solicitation and reputation reporting.'
-                    },
-                    {
-                        title: 'Listing Management',
-                        desc: '65+ business directory listings created, verified, and maintained across major platforms to boost local SEO and online visibility.'
-                    },
-                    {
-                        title: 'AI Agent Suite',
-                        desc: 'Inbound voice agent for call screening, website chat agent for lead qualification, and Facebook Messenger bot for 24/7 engagement.'
-                    },
-                    {
-                        title: 'Full CRM Platform',
-                        desc: 'Complete customer relationship management system with email/SMS automation, landing pages, funnels, appointment scheduling, and workflow automation.'
-                    }
-                ];
-
-                if (agreementType === 'seo') {
-                    coreServices.push({
-                        title: 'Complete SEO Package',
-                        desc: 'On-page optimization, off-page backlink strategy, local SEO, and Google Business Profile optimization for one metro area.'
-                    });
-                }
-
-                coreServices.forEach((service, index) => {
-                    // Service box with left accent bar
-                    doc.setFillColor(248, 250, 252);
-                    doc.setDrawColor(200, 210, 230);
-                    doc.setLineWidth(0.2);
-                    doc.roundedRect(20, yPos - 5, 170, 18, 2, 2, 'FD');
-
-                    // Colored left accent bar
-                    doc.setFillColor(102, 126, 234);
-                    doc.rect(20, yPos - 5, 3, 18, 'F');
-
-                    // Bullet circle
-                    doc.setFillColor(102, 126, 234);
-                    doc.circle(28, yPos - 1, 1.5, 'F');
-
-                    doc.setFontSize(11);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(51, 51, 51);
-                    doc.text(service.title, 32, yPos);
-
-                    doc.setFontSize(9);
-                    doc.setFont(undefined, 'normal');
-                    doc.setTextColor(70, 70, 70);
-                    const descLines = doc.splitTextToSize(service.desc, 155);
-                    let descY = yPos + 5;
-                    descLines.forEach(line => {
-                        doc.text(line, 32, descY);
-                        descY += 4;
-                    });
-
-                    yPos += 20;
-                });
-
-                // Add-on Services (if any selected)
-                if (data.addonStatewideSEO || data.addonNationwideSEO || data.addonAdManagement || data.addonAvatarVideos || data.addonInteractiveAvatar) {
-                    // Check if we need a new page
-                    if (yPos > 250) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-
-                    yPos += 5;
-                    doc.setFontSize(14);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(102, 126, 234);
-                    doc.text('Optional Add-On Services', 20, yPos);
-                    yPos += 10;
-
-                    if (data.addonStatewideSEO) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(240, 253, 244);
-                        doc.setDrawColor(34, 197, 94);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(21, 128, 61);
-                        doc.text('ADD-ON: Statewide SEO Upgrade - +$999/month', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text('Expand SEO optimization coverage from single metro area to entire state with multi-city targeting', 25, yPos + 5);
-                        yPos += 15;
-                    }
-
-                    if (data.addonNationwideSEO) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(240, 253, 244);
-                        doc.setDrawColor(34, 197, 94);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(21, 128, 61);
-                        doc.text('ADD-ON: Nationwide SEO Upgrade - +$2,499/month', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text('Expand SEO coverage to nationwide reach with comprehensive multi-location targeting and optimization', 25, yPos + 5);
-                        yPos += 15;
-                    }
-
-                    if (data.addonAdManagement) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(255, 251, 240);
-                        doc.setDrawColor(251, 191, 36);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(146, 64, 14);
-                        doc.text('ADD-ON: Ad Management - 5% of spend + $49.99/month', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text('Full campaign management across Google, Facebook, LinkedIn - strategy, creative, optimization, reporting', 25, yPos + 5);
-                        yPos += 15;
-                    }
-
-                    if (data.addonAvatarVideos) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(240, 253, 244);
-                        doc.setDrawColor(34, 197, 94);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(21, 128, 61);
-                        doc.text('ADD-ON: AI Avatar Videos - $99/month', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text('Create professional avatar videos with customizable personas, templates, and unlimited generation credits', 25, yPos + 5);
-                        yPos += 15;
-                    }
-
-                    if (data.addonInteractiveAvatar) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(245, 243, 255);
-                        doc.setDrawColor(139, 92, 246);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(109, 40, 217);
-                        doc.text('ADD-ON: Interactive Avatar - $4,999 setup + $0.19/min', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text('Real-time conversational AI avatar with custom personality, voice synthesis, and natural language understanding', 25, yPos + 5);
-                        yPos += 15;
-                    }
-
-                    if (data.customServices && data.customServices.trim()) {
-                        if (yPos > 260) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.setFillColor(240, 248, 255);
-                        doc.setDrawColor(100, 149, 237);
-                        doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(30, 64, 175);
-                        doc.text('CUSTOM: Additional Services', 25, yPos);
-
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        const customLines = doc.splitTextToSize(data.customServices.trim(), 160);
-                        let customY = yPos + 5;
-                        customLines.forEach(line => {
-                            doc.text(line, 25, customY);
-                            customY += 4;
-                        });
-                        yPos = customY + 6;
-                    }
-                }
-
-                // Custom services standalone (if no other add-ons selected)
-                if (!data.addonStatewideSEO && !data.addonNationwideSEO && !data.addonAdManagement && !data.addonAvatarVideos && !data.addonInteractiveAvatar && data.customServices && data.customServices.trim()) {
-                    if (yPos > 250) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    yPos += 5;
-                    doc.setFontSize(14);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(102, 126, 234);
-                    doc.text('Additional Custom Services', 20, yPos);
-                    yPos += 10;
-
-                    doc.setFillColor(240, 248, 255);
-                    doc.setDrawColor(100, 149, 237);
-                    doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, 'FD');
-
-                    doc.setFontSize(10);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(30, 64, 175);
-                    doc.text('CUSTOM: Additional Services', 25, yPos);
-
-                    doc.setFontSize(8);
-                    doc.setFont(undefined, 'normal');
-                    const customLines = doc.splitTextToSize(data.customServices.trim(), 160);
-                    let customY = yPos + 5;
-                    customLines.forEach(line => {
-                        doc.text(line, 25, customY);
-                        customY += 4;
-                    });
-                    yPos = customY + 6;
-                }
-
-                // Usage-Based Charges Section
-                yPos += 5;
-                doc.setFontSize(12);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(102, 126, 234);
-                doc.text('Usage-Based AI Services', 20, yPos);
-                yPos += 8;
-
-                doc.setFillColor(254, 249, 240);
-                doc.setDrawColor(234, 179, 8);
-                doc.roundedRect(20, yPos - 5, 170, 22, 2, 2, 'FD');
-
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
-                doc.setTextColor(51, 51, 51);
-                doc.text(`Voice Agent: ${data.voiceAgentRate}/minute`, 25, yPos);
-                doc.text(`Chat Agent: ${data.chatAgentRate}/message`, 100, yPos);
-
-                doc.setFontSize(8);
-                doc.setFont(undefined, 'italic');
-                doc.setTextColor(100, 100, 100);
-                const usageNote = 'These services are entirely optional. You only pay when you use them. Usage charges are billed monthly based on actual consumption.';
-                const usageLines = doc.splitTextToSize(usageNote, 160);
-                let usageY = yPos + 5;
-                usageLines.forEach(line => {
-                    doc.text(line, 25, usageY);
-                    usageY += 4;
-                });
-
-                // Footer
-                doc.setFontSize(9);
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(102, 126, 234);
-                doc.text('Kynex - Powered by AI, Driven by Results', 105, 280, { align: 'center' });
 
                 // Start Agreement on new page
                 doc.addPage();
@@ -1239,23 +961,48 @@
                         doc.setFontSize(sectionHeaderSize);
                         doc.setTextColor(102, 126, 234);
                         y += 3; // Extra spacing before section headers
+                        doc.text(line, 20, y);
+                        y += 5;
                     }
                     // Subsection headers (1.1, 1.2, etc.)
                     else if (isSubSection) {
-                        doc.setFont(undefined, 'bold');
-                        doc.setFontSize(normalFontSize);
-                        doc.setTextColor(51, 51, 51);
-                        y += 2;
+                        y += 2; // Extra spacing before subsection headers
+                        // Check if line contains a colon (subsection title with description)
+                        const colonIndex = line.indexOf(':');
+                        if (colonIndex > 0) {
+                            // Split at colon - bold the title, normal the description
+                            const title = line.substring(0, colonIndex + 1);
+                            const description = line.substring(colonIndex + 1);
+
+                            // Render title in bold
+                            doc.setFont(undefined, 'bold');
+                            doc.setFontSize(normalFontSize);
+                            doc.setTextColor(51, 51, 51);
+                            const titleWidth = doc.getTextWidth(title);
+                            doc.text(title, 20, y);
+
+                            // Render description in normal font (if it's not empty after trimming)
+                            if (description.trim()) {
+                                doc.setFont(undefined, 'normal');
+                                doc.text(description, 20 + titleWidth, y);
+                            }
+                        } else {
+                            // No colon - bold the entire line (subsection title only)
+                            doc.setFont(undefined, 'bold');
+                            doc.setFontSize(normalFontSize);
+                            doc.setTextColor(51, 51, 51);
+                            doc.text(line, 20, y);
+                        }
+                        y += 5;
                     }
                     // Normal text
                     else {
                         doc.setFont(undefined, 'normal');
                         doc.setFontSize(normalFontSize);
                         doc.setTextColor(51, 51, 51);
+                        doc.text(line, 20, y);
+                        y += 5;
                     }
-
-                    doc.text(line, 20, y);
-                    y += 5;
                 }
 
                 // Now handle section 9, IN WITNESS WHEREOF, and signatures together on final page
@@ -1400,7 +1147,9 @@
         }
 
         function formatDate(dateString) {
-            const date = new Date(dateString);
+            // Parse as local date to avoid timezone issues
+            const [year, month, day] = dateString.split('-');
+            const date = new Date(year, month - 1, day);
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('en-US', options);
         }
@@ -1410,11 +1159,7 @@
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content & Automation $1999 Setup Fee and $1499 a month Package Local
-between ${data.clientName} and ${data.consultantName}
-${formattedDate}
-
-This Consulting Agreement ("Agreement") states the terms and conditions that govern the contractual agreement between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having its principal address at ${data.consultantAddress} ("Consultant").
+            return `This Consulting Agreement ("Agreement") is between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having its principal address at ${data.consultantAddress} ("Consultant").
 
 WHEREAS, Consultant will design a custom business strategy for Client using Artificial Intelligence ("AI") and involving automated content creation to enhance awareness, interest, and promote Client's ${data.clientBusiness} ("Main Service"), and Client desires to engage Consultant to implement, manage, and optimize this strategy.
 
@@ -1645,11 +1390,7 @@ IN WITNESS WHEREOF, each of the Parties has executed this Consulting Agreement, 
             const formattedDate = formatDate(data.agreementDate);
             const formattedEndDate = formatDate(data.priceValidityEndDate);
 
-            return `Consulting Agreement for AI Content, Automation & SEO Services $4999 Setup Fee and $2999 a month Package
-between ${data.clientName} and ${data.consultantName}
-${formattedDate}
-
-This Consulting Agreement ("Agreement") states the terms and conditions that govern the contractual agreement between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having a principal address at ${data.consultantAddress} ("Consultant").
+            return `This Consulting Agreement ("Agreement") is between ${data.clientName}, a ${data.clientEntityType}, having a principal place of business at ${data.clientAddress} ("Client"), and ${data.consultantName}${dbaText}, a ${data.consultantEntityType}, having a principal address at ${data.consultantAddress} ("Consultant").
 
 WHEREAS, Consultant will design and implement a custom business strategy for Client using Artificial Intelligence ("AI"), digital automation, SEO optimization, and automated content creation to promote Client's ${data.clientBusiness} ("Main Service"), and Client desires to engage Consultant to execute and manage this strategy.
 
